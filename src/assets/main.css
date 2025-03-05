@@ -1,0 +1,16 @@
+@font-face {
+  font-family: "钉钉进步体";
+  src: url("@/assets/DingTalk JinBuTi.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("@/assets/JetBrainsMono[wght].ttf") format("truetype");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "钉钉进步体";
+  user-select: none;
+}
