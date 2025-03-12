@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Item from "./Item.vue";
+import type { EventItem } from "@/types/eventItem";
 
 defineProps<{
-  state: "worried" | "non-worried" | "confused" | "ok";
+  e: EventItem;
 }>();
 
 const textMapper = ref(
@@ -18,8 +19,8 @@ const textMapper = ref(
 
 <template>
   <Item class="item">
-    <span :class="['s', state]">{{ textMapper.get(state) }}</span>
-    <p><slot></slot></p>
+    <span :class="['s', e.state]">{{ textMapper.get(e.state) }}</span>
+    <p>{{ e.body }}</p>
   </Item>
 </template>
 

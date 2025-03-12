@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Item from "./Item.vue";
+import type { ProjectItem } from "@/types/projectItem";
 
-const props = defineProps<{
-  state?: "failed" | "stucked" | "done";
-  org: string;
-  project: string;
-  progress: number;
+const { p } = defineProps<{
+  p: ProjectItem;
 }>();
 
 const percent = ref(
@@ -19,19 +17,19 @@ const percent = ref(
       } else {
         return p;
       }
-    })(props.progress) * 100
+    })(p.progress) * 100
   }%`,
 );
 </script>
 
 <template>
   <Item
-    :class="['item', state]"
+    :class="['item', p.exception, percent.includes('100%') ? 'done' : '']"
     :style="`--progress: ${percent};`"
     :percent="percent"
   >
-    <h2>{{ org }}</h2>
-    <p>{{ project }}</p>
+    <h2>{{ p.org }}</h2>
+    <p>{{ p.project }}</p>
     <div class="progress"></div>
   </Item>
 </template>
@@ -69,11 +67,11 @@ const percent = ref(
   }
 
   &.failed {
-    background: rgb(247, 137.4, 137.4);
-    color: #fff;
+    background: var(--color-red);
+    color: var(--color-t-main-reverse);
 
     &::after {
-      color: #fff;
+      color: var(--color-t-main-reverse);
       opacity: 0.3;
     }
 
@@ -86,8 +84,22 @@ const percent = ref(
     }
   }
 
-  &.stucked .progress::after {
+  &.stucked {
     background: var(--color-orange);
+    color: var(--color-t-main-reverse);
+
+    &::after {
+      color: var(--color-t-main-reverse);
+      opacity: 0.3;
+    }
+
+    & .progress {
+      background: #ffffff44;
+
+      &::after {
+        background: rgba(255, 127, 0, 0.75);
+      }
+    }
   }
 
   &.done .progress::after {

@@ -13,19 +13,11 @@ const events = ref(useEventStore().events);
   <div class="root">
     <h1 v-if="projects.length">项目</h1>
     <article>
-      <ProjectItem
-        v-for="p in projects"
-        :state="p.state"
-        :org="p.org"
-        :project="p.project"
-        :progress="p.progress"
-      />
+      <ProjectItem v-for="p in projects" :p="p" />
     </article>
     <h1 v-if="events.length">事件</h1>
     <article>
-      <EventItem v-for="e in events" :state="e.state">
-        {{ e.body }}
-      </EventItem>
+      <EventItem v-for="e in events" :e="e" />
     </article>
   </div>
 </template>
@@ -34,6 +26,7 @@ const events = ref(useEventStore().events);
 .root {
   padding: 2.4rem;
   background: var(--color-bg-main);
+  perspective: 100px;
 
   & h1 {
     color: var(--color-bg-main-reverse);
@@ -45,6 +38,7 @@ const events = ref(useEventStore().events);
 
   & > * {
     margin-bottom: 1rem;
+    transform-style: preserve-3d;
 
     &:last-child {
       margin-bottom: 0;

@@ -40,6 +40,7 @@ function handleHighlighted() {
 
   &:hover {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    transform: translateZ(1px);
   }
 
   &::after {
