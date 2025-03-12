@@ -3,7 +3,7 @@ import { ref } from "vue";
 import Item from "./Item.vue";
 
 const props = defineProps<{
-  state?: "failed";
+  state?: "failed" | "stucked" | "done";
   org: string;
   project: string;
   progress: number;
@@ -54,7 +54,7 @@ const percent = ref(
       left: 0;
       width: var(--progress);
       height: 100%;
-      background: rgb(133.4, 206.2, 97.4);
+      background: var(--color-blue);
     }
   }
 
@@ -64,8 +64,8 @@ const percent = ref(
 
   &:hover,
   &.hl {
-    background: #24569f;
-    color: #fff;
+    background: var(--color-bg-main-reverse);
+    color: var(--color-t-main-reverse);
   }
 
   &.failed {
@@ -84,6 +84,14 @@ const percent = ref(
         background: rgba(255, 0, 0, 0.5);
       }
     }
+  }
+
+  &.stucked .progress::after {
+    background: var(--color-orange);
+  }
+
+  &.done .progress::after {
+    background: var(--color-green);
   }
 }
 </style>

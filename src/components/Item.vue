@@ -1,7 +1,15 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from "vue";
+
+const hl = ref("");
+
+function handleHighlighted() {
+  hl.value = hl.value ? "" : "hl";
+}
+</script>
 
 <template>
-  <div class="item">
+  <div :class="['item', hl]" @click="handleHighlighted">
     <slot></slot>
   </div>
 </template>
@@ -13,8 +21,8 @@
   margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  background: rgba(102, 176, 255, 0.168);
-  color: #333;
+  background: var(--color-bg-sub);
+  color: var(--color-t-main);
 
   &,
   & * {
@@ -24,19 +32,21 @@
 
   &:hover,
   &.hl {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-
     &::after {
-      color: #fff;
+      color: var(--color-t-main-reverse);
       opacity: 0.3;
     }
+  }
+
+  &:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   }
 
   &::after {
     position: absolute;
     right: 0.8rem;
     bottom: -1.2rem;
-    color: #000;
+    color: var(--color-t-main);
     font-family: "JetBrains Mono";
     font-size: 3rem;
     opacity: 0.05;

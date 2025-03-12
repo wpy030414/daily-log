@@ -11,40 +11,36 @@ const events = ref(useEventStore().events);
 
 <template>
   <div class="root">
-    <div v-if="projects.length">
-      <h1>项目</h1>
-      <article>
-        <ProjectItem
-          v-for="p in projects"
-          :state="p.state"
-          :org="p.org"
-          :project="p.project"
-          :progress="p.progress"
-        />
-      </article>
-    </div>
-    <div v-if="events.length">
-      <h1>事件</h1>
-      <article>
-        <EventItem v-for="e in events" :state="e.state">
-          {{ e.body }}
-        </EventItem>
-      </article>
-    </div>
+    <h1 v-if="projects.length">项目</h1>
+    <article>
+      <ProjectItem
+        v-for="p in projects"
+        :state="p.state"
+        :org="p.org"
+        :project="p.project"
+        :progress="p.progress"
+      />
+    </article>
+    <h1 v-if="events.length">事件</h1>
+    <article>
+      <EventItem v-for="e in events" :state="e.state">
+        {{ e.body }}
+      </EventItem>
+    </article>
   </div>
 </template>
 
 <style scoped>
 .root {
   padding: 2.4rem;
-  background: #e0e9f9;
+  background: var(--color-bg-main);
 
   & h1 {
-    color: #24569f;
+    color: var(--color-bg-main-reverse);
   }
 
   & h4 {
-    color: #24559f77;
+    color: var(--color-bg-sub-reverse);
   }
 
   & > * {

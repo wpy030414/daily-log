@@ -8,6 +8,20 @@
   src: url("@/assets/JetBrainsMono[wght].ttf") format("truetype");
 }
 
+:root {
+  --color-bg-main: rgb(224, 233, 249);
+  --color-bg-sub: rgba(102, 176, 255, 0.168);
+  --color-t-main: #333;
+  --color-bg-main-reverse: rgb(36, 86, 159);
+  --color-bg-sub-reverse: rgba(36, 85, 159, 0.467);
+  --color-t-main-reverse: #fff;
+
+  --color-green: rgb(133.4, 206.2, 97.4);
+  --color-orange: rgb(235, 180.6, 99);
+  --color-red: rgb(247, 137.4, 137.4);
+  --color-blue: rgb(102.2, 177.4, 255);
+}
+
 * {
   margin: 0;
   padding: 0;
