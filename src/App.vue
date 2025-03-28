@@ -4,30 +4,10 @@ import { useEventStore } from "./stores/events";
 import { useProjectStore } from "./stores/projects";
 import EventItem from "./components/EventItem.vue";
 import ProjectItem from "./components/ProjectItem.vue";
-import html2canvas from "html2canvas";
+import { shotElement } from "./utils";
 
 const projects = ref(useProjectStore().projects);
 const events = ref(useEventStore().events);
-
-function shot() {
-  html2canvas(document.querySelector("#c-root")!, { scale: 3 }).then(
-    (canvas) => {
-      const screenshotContainer = document.getElementById(
-        "screenshotContainer",
-      )!;
-      screenshotContainer.innerHTML = "";
-      screenshotContainer.appendChild(canvas);
-
-      const dataURL = canvas.toDataURL("image/png");
-
-      const link = document.createElement("a");
-      link.href = dataURL;
-      link.download = "日志快照.png";
-
-      link.click();
-    },
-  );
-}
 </script>
 
 <template>
@@ -41,7 +21,8 @@ function shot() {
       <EventItem v-for="e in events" :e="e" />
     </article>
   </div>
-  <button @click="shot">Shot</button>
+  <button title="下载" @click="shotElement('#c-root', 'download')">💾</button>
+  <button title="复制" @click="shotElement('#c-root', 'copy')">📤</button>
   <canvas v-show="false" id="screenshotContainer"></canvas>
 </template>
 
