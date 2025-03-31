@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 
-const hl = ref("");
+const hl = ref('')
 
 function handleHighlighted() {
-  hl.value = hl.value ? "" : "hl";
+  hl.value = hl.value ? '' : 'hl'
 }
 </script>
 
@@ -48,7 +48,7 @@ function handleHighlighted() {
     right: 0.8rem;
     bottom: -1.2rem;
     color: var(--color-t-main);
-    font-family: "JetBrains Mono";
+    font-family: 'JetBrains Mono';
     font-size: 3rem;
     opacity: 0.05;
   }

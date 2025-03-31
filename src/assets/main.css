@@ -1,15 +1,15 @@
 @font-face {
-  font-family: "钉钉进步体";
-  src: url("@/assets/DingTalk JinBuTi.ttf") format("truetype");
+  font-family: '钉钉进步体';
+  src: url('@/assets/DingTalk JinBuTi.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: "JetBrains Mono";
-  src: url("@/assets/JetBrainsMono[wght].ttf") format("truetype");
+  font-family: 'JetBrains Mono';
+  src: url('@/assets/JetBrainsMono[wght].ttf') format('truetype');
 }
 
 :root {
-  --color-bg-main: rgb(224, 233, 249);
+  --color-bg-main: rgb(244, 248, 255);
   --color-bg-sub: rgba(102, 176, 255, 0.168);
   --color-t-main: #333;
   --color-bg-main-reverse: rgb(36, 86, 159);
@@ -25,6 +25,10 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: "钉钉进步体";
+  font-family: '钉钉进步体';
   user-select: none;
+}
+
+.padding {
+  padding: 2.4rem;
 }

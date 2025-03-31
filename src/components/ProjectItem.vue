@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import Item from "./Item.vue";
-import type { ProjectItem } from "@/types/projectItem";
+import { ref } from 'vue'
+import Item from './Item.vue'
+import type { ProjectItem } from '@/types/projectItem'
 
 const { p } = defineProps<{
-  p: ProjectItem;
-}>();
+  p: ProjectItem
+}>()
 
 const percent = ref(
   `${
     ((p) => {
       if (p < 0) {
-        return 0;
+        return 0
       } else if (p > 1) {
-        return 1;
+        return 1
       } else {
-        return p;
+        return p
       }
     })(p.progress) * 100
   }%`,
-);
+)
 </script>
 
 <template>
@@ -46,7 +46,7 @@ const percent = ref(
     overflow: hidden;
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       top: 0;
       left: 0;

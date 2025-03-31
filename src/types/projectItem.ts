@@ -8,17 +8,17 @@ export interface ProjectItem {
    *
    * 没有异常则无需填写。
    */
-  exception?: "failed" | "stucked";
+  exception?: 'failed' | 'stucked'
 
   /**
    * 所属组织
    */
-  org: string;
+  org: string
 
   /**
    * 项目名
    */
-  project: string;
+  project: string
 
   /**
    * 进度
@@ -27,5 +27,5 @@ export interface ProjectItem {
    *
    * 只能从连续范围内取值：[0, 1]，超出则自动修正为距离最近的上下界。
    */
-  progress: number;
+  progress: number
 }

@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import Item from "./Item.vue";
-import type { EventItem } from "@/types/eventItem";
+import { ref } from 'vue'
+import Item from './Item.vue'
+import type { EventItem } from '@/types/eventItem'
 
 defineProps<{
-  e: EventItem;
-}>();
+  e: EventItem
+}>()
 
 const textMapper = ref(
   new Map([
-    ["worried", "急"],
-    ["non-worried", "缓"],
-    ["confused", "疑"],
-    ["ok", "✓"],
+    ['worried', '急'],
+    ['non-worried', '缓'],
+    ['confused', '疑'],
+    ['ok', '✓'],
   ]),
-);
+)
 </script>
 
 <template>
