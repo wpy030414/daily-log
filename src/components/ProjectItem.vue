@@ -28,8 +28,8 @@ const percent = ref(
     :style="`--progress: ${percent};`"
     :percent="percent"
   >
-    <h2>{{ p.org }}</h2>
-    <p>{{ p.project }}</p>
+    <h2>{{ p.org || '请输入文本' }}</h2>
+    <p>{{ p.project || '请输入文本' }}</p>
     <div class="progress"></div>
   </Item>
 </template>

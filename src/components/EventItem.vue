@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import Item from './Item.vue'
 import type { EventItem } from '@/types/eventItem'
+import { marked } from 'marked'
 
 defineProps<{
   e: EventItem
@@ -20,7 +21,7 @@ const textMapper = ref(
 <template>
   <Item class="item">
     <span :class="['s', e.state]">{{ textMapper.get(e.state) }}</span>
-    <p>{{ e.body }}</p>
+    <p v-html="marked.parse(e.body) || '请输入文本'"></p>
   </Item>
 </template>
 
