@@ -1,4 +1,4 @@
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import html2canvas from 'html2canvas'
 
 export function downloadInBrowser(href: string, filename: string) {
@@ -52,7 +52,7 @@ export function shotElement(
   callbackFn?: Function,
 ) {
   html2canvas(document.querySelector(cssPath)!, { scale: 3 }).then(async (canvas) => {
-    const screenshotContainer = document.getElementById('screenshotContainer')!
+    const screenshotContainer = document.getElementById('screenshot-container')!
     screenshotContainer.innerHTML = ''
     screenshotContainer.appendChild(canvas)
 
@@ -77,6 +77,16 @@ export function shotElement(
           }
         } catch (error) {
           ElMessage.error('复制失败！您可能正在使用不安全的通讯，或拒绝了权限申请。')
+          if (window.location.href.startsWith('http://')) {
+            ElMessageBox.alert(
+              `<p>Chrome/Edge 认为 http 网站不安全，会限制其权限，包括剪切板权限。</p>
+             <p>打开 <a href="chrome://flags/">chrome://flags/</a>，查找 #unsafely-treat-insecure-origin-as-secure，启用并填入 <a href="${window.location.href}">${window.location.href}</a>，按要求重启浏览器后，本页面就能正常使用剪切板了。</p>`,
+              '您的剪切板不能使用！',
+              {
+                dangerouslyUseHTMLString: true,
+              },
+            )
+          }
         }
         break
     }

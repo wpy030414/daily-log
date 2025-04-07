@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useEventStore } from './stores/events'
 import { useProjectStore } from './stores/projects'
 import EventItem from './components/EventItem.vue'
 import ProjectItem from './components/ProjectItem.vue'
 import { downloadInBrowser, shotElement, uploadInBrowser } from './utils'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const activeName = ref('home')
 
@@ -99,10 +99,37 @@ async function handleInputOption() {
     ElMessage.info('您取消了操作。')
   }
 }
+
+onMounted(() => {
+  window.addEventListener('scroll', handleUpdateScrollState)
+  window.addEventListener('resize', handleUpdateScrollState)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleUpdateScrollState)
+  window.removeEventListener('resize', handleUpdateScrollState)
+})
+
+function handleUpdateScrollState() {
+  const scrollHeight = Math.max(
+    document.body.clientHeight,
+    document.body.offsetHeight,
+    document.body.scrollHeight,
+    document.documentElement.clientHeight,
+    document.documentElement.offsetHeight,
+    document.documentElement.scrollHeight,
+  )
+  const scrollableHeight = scrollHeight - window.innerHeight
+  pageYRatio.value = scrollableHeight > 0 ? (window.pageYOffset / scrollableHeight) * 100 : 0
+}
+
+const pageYRatio = ref(0)
+
+function handleRingClicked() {}
 </script>
 
 <template>
-  <el-tabs v-model="activeName" class="demo-tabs" :stretch="true">
+  <el-tabs v-model="activeName" :stretch="true">
     <el-tab-pane label="首页" name="home">
       <div v-if="activeName == 'home'" id="c-root" class="padding">
         <h1>项目</h1>
@@ -123,7 +150,7 @@ async function handleInputOption() {
         <el-button title="复制" @click="shotElement('#c-root', 'copy')"
           ><el-icon><CopyDocument /></el-icon
         ></el-button>
-        <canvas v-show="false" id="screenshotContainer"></canvas>
+        <canvas v-show="false" id="screenshot-container"></canvas>
       </div>
     </el-tab-pane>
     <el-tab-pane label="配置页" name="option">
@@ -236,6 +263,15 @@ async function handleInputOption() {
       </div>
     </el-tab-pane>
   </el-tabs>
+  <el-progress
+    id="scroll-progress"
+    type="circle"
+    :percentage="pageYRatio"
+    :show-text="false"
+    :stroke-width="18"
+    :status="pageYRatio > 99 ? 'exception' : ''"
+    @click="handleRingClicked"
+  />
 </template>
 
 <style scoped>
@@ -259,5 +295,13 @@ async function handleInputOption() {
       margin-bottom: 0;
     }
   }
+}
+
+#scroll-progress {
+  position: fixed;
+  z-index: 999;
+  right: 6rem;
+  bottom: 6rem;
+  zoom: 0.3;
 }
 </style>
