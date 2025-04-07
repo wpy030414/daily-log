@@ -4,7 +4,8 @@ import { useEventStore } from './stores/events'
 import { useProjectStore } from './stores/projects'
 import EventItem from './components/EventItem.vue'
 import ProjectItem from './components/ProjectItem.vue'
-import { shotElement } from './utils'
+import { downloadInBrowser, shotElement, uploadInBrowser } from './utils'
+import { ElMessage } from 'element-plus'
 
 const activeName = ref('home')
 
@@ -71,6 +72,32 @@ function handleDelete(objType: 'p' | 'e', index: number) {
     return
   }
   objList.splice(index, 1)
+}
+
+function handleOutputOption() {
+  downloadInBrowser(
+    'data:text/json;charset=utf-8,' +
+      encodeURIComponent(
+        JSON.stringify({
+          projects: projects.value,
+          events: events.value,
+        }),
+      ),
+    `日志快照-${Date.now()}.json`,
+  )
+}
+
+async function handleInputOption() {
+  const result = (await uploadInBrowser()) as any
+  if (result) {
+    projects.value = result.projects
+    useProjectStore().projects = result.projects
+    events.value = result.events
+    useEventStore().events = result.events
+    ElMessage.success('导入成功！')
+  } else {
+    ElMessage.info('您取消了操作。')
+  }
 }
 </script>
 
@@ -197,6 +224,15 @@ function handleDelete(objType: 'p' | 'e', index: number) {
             </template>
           </el-table-column>
         </el-table>
+
+        <el-divider />
+
+        <el-button title="导出" @click="handleOutputOption"
+          ><el-icon><Download /></el-icon
+        ></el-button>
+        <el-button title="导入" @click="handleInputOption"
+          ><el-icon><Upload /></el-icon
+        ></el-button>
       </div>
     </el-tab-pane>
   </el-tabs>
