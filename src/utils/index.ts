@@ -1,4 +1,4 @@
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import html2canvas from 'html2canvas'
 
 export function downloadInBrowser(href: string, filename: string) {
@@ -46,11 +46,29 @@ export function uploadInBrowser(isJSON: boolean = true) {
   })
 }
 
-export function shotElement(
-  cssPath: string,
-  method: 'download' | 'copy' = 'download',
-  callbackFn?: Function,
-) {
+export async function copyToClipboard(data: string | Blob) {
+  try {
+    if (typeof data === 'string') {
+      await navigator.clipboard.writeText(data)
+    } else if (data instanceof Blob) {
+      await navigator.clipboard.write([new ClipboardItem({ [data.type]: data })])
+    }
+    ElMessage.success('已复制到剪切板！')
+  } catch (e) {
+    if (e instanceof Error) {
+      const errorMessages = {
+        NotAllowedError: '您拒绝了授权！',
+        SecurityError: '您正在使用非安全上下文，不能使用剪切板！',
+        default: '发生了未知错误！',
+      }
+      const message = errorMessages[e.name as keyof typeof errorMessages] || errorMessages.default
+      ElMessage.error(message)
+      throw new Error(e.message)
+    }
+  }
+}
+
+export function shotElement(cssPath: string, method: 'download' | 'copy' = 'download') {
   html2canvas(document.querySelector(cssPath)!, { scale: 3 }).then(async (canvas) => {
     const screenshotContainer = document.getElementById('screenshot-container')!
     screenshotContainer.innerHTML = ''
@@ -63,34 +81,14 @@ export function shotElement(
         ElMessage.success('已下载到本地磁盘！')
         break
       case 'copy':
-        try {
-          const blob = await new Promise<Blob | null>((resolve) => {
-            canvas.toBlob((blob) => {
-              resolve(blob)
-            }, 'image/png')
-          })
+        const blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob((blob) => resolve(blob), 'image/png'),
+        )
 
-          if (blob) {
-            const item = new ClipboardItem({ 'image/png': blob })
-            await navigator.clipboard.write([item])
-            ElMessage.success('已复制到剪切板！')
-          }
-        } catch (error) {
-          ElMessage.error('复制失败！您可能正在使用不安全的通讯，或拒绝了权限申请。')
-          if (window.location.href.startsWith('http://')) {
-            ElMessageBox.alert(
-              `<p>Chrome/Edge 认为 http 网站不安全，会限制其权限，包括剪切板权限。</p>
-             <p>打开 <a href="chrome://flags/">chrome://flags/</a>，查找 #unsafely-treat-insecure-origin-as-secure，启用并填入 <a href="${window.location.href}">${window.location.href}</a>，按要求重启浏览器后，本页面就能正常使用剪切板了。</p>`,
-              '您的剪切板不能使用！',
-              {
-                dangerouslyUseHTMLString: true,
-              },
-            )
-          }
+        if (blob) {
+          await copyToClipboard(blob)
         }
         break
     }
-
-    callbackFn?.apply(undefined)
   })
 }
