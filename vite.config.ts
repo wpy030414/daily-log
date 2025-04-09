@@ -2,12 +2,17 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import basicSsl from '@vitejs/plugin-basic-ssl'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    basicSsl({
+      name: 'Penyo',
+      domains: ['oss.ahkdxx.cn', 'nas.localhost'],
+      certDir: 'dist/cert',
+    }),
     vueDevTools(),
   ],
   resolve: {
