@@ -1,14 +1,22 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useEventStore } from './stores/events'
 import { useProjectStore } from './stores/projects'
-import EventItem from './components/EventItem.vue'
-import ProjectItem from './components/ProjectItem.vue'
+import VEventCard from './components/VEventCard.vue'
+import VProjectCard from './components/VProjectCard.vue'
 import { downloadInBrowser, shotElement, uploadInBrowser } from './utils'
-import { ElMessage } from 'element-plus'
-import { useTheme } from './stores/theme'
+import { useCustomTheme } from './stores/theme'
+import { useMessage } from './stores/messages'
+import type { Store } from 'pinia'
 
-const activeName = ref('home')
+declare global {
+  interface Window {
+    msg: Store
+  }
+}
+window.msg = useMessage()
+
+const activeName = ref('render')
 
 const projects = ref(useProjectStore().projects)
 const events = ref(useEventStore().events)
@@ -95,194 +103,298 @@ async function handleInputOption() {
     useProjectStore().projects = result.projects
     events.value = result.events
     useEventStore().events = result.events
-    ElMessage.success('导入成功！')
+    useMessage().success('导入成功！')
   } else {
-    ElMessage.info('您取消了操作。')
+    useMessage().info('您取消了操作。')
   }
 }
 
-onMounted(() => {
-  window.addEventListener('scroll', handleUpdateScrollState)
-  window.addEventListener('resize', handleUpdateScrollState)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleUpdateScrollState)
-  window.removeEventListener('resize', handleUpdateScrollState)
-})
-
-function handleUpdateScrollState() {
-  const scrollHeight = Math.max(
-    document.body.clientHeight,
-    document.body.offsetHeight,
-    document.body.scrollHeight,
-    document.documentElement.clientHeight,
-    document.documentElement.offsetHeight,
-    document.documentElement.scrollHeight,
-  )
-  const scrollableHeight = scrollHeight - window.innerHeight
-  pageYRatio.value = scrollableHeight > 0 ? (window.pageYOffset / scrollableHeight) * 100 : 0
+function visit(url: string) {
+  const a = document.createElement('a')
+  a.href = url
+  a.target = '_blank'
+  a.click()
+  a.remove()
 }
-
-const pageYRatio = ref(0)
-
-function handleRingClicked() {}
 </script>
 
 <template>
-  <el-tabs v-model="activeName" :stretch="true">
-    <el-tab-pane label="首页" name="home">
-      <div v-if="activeName == 'home'" id="c-root" class="padding">
-        <h1>项目</h1>
-        <article v-if="projects.length">
-          <ProjectItem v-for="p in projects" :p="p" />
-        </article>
-        <el-empty v-else description="空空如也" />
-        <h1>事件</h1>
-        <article v-if="events.length">
-          <EventItem v-for="e in events" :e="e" />
-        </article>
-        <el-empty v-else description="空空如也" />
-      </div>
-      <div class="padding">
-        <el-button title="下载" @click="shotElement('#c-root', 'download')"
-          ><el-icon><Download /></el-icon
-        ></el-button>
-        <el-button title="复制" @click="shotElement('#c-root', 'copy')"
-          ><el-icon><CopyDocument /></el-icon
-        ></el-button>
-        &nbsp;
-        <el-segmented v-model="useTheme().value" :options="useTheme().options" color="red" />
-        <canvas v-show="false" id="screenshot-container"></canvas>
-      </div>
-    </el-tab-pane>
-    <el-tab-pane label="配置页" name="option">
-      <div class="padding">
-        <h2>
-          项目
-          <el-button @click="handleAdd('p')"
-            ><el-icon><Plus /></el-icon
-          ></el-button>
-        </h2>
-        <el-table :data="projects" stripe style="width: 100%">
-          <el-table-column prop="exception" label="异常" width="200">
-            <template #default="scope">
-              <el-select v-model="scope.row.exception" placeholder="无">
-                <el-option
-                  v-for="item in [
-                    { label: '无', value: undefined },
-                    { label: '失败/放弃', value: 'failed' },
-                    { label: '搁置/卡住/暂停', value: 'stucked' },
-                  ]"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column prop="org" label="所属组织" width="200">
-            <template #default="scope">
-              <el-input v-model="scope.row.org" />
-            </template>
-          </el-table-column>
-          <el-table-column prop="project" label="项目名" width="200">
-            <template #default="scope">
-              <el-input v-model="scope.row.project" />
-            </template>
-          </el-table-column>
-          <el-table-column prop="progress" label="进度" width="200">
-            <template #default="scope">
-              <el-input-number v-model="scope.row.progress" :min="0" :max="1" :step="0.01" />
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" min-width="160" fixed="right" align="right">
-            <template #default="scope">
-              <el-button size="small" @click="handleMoveUp('p', scope.$index)"
-                ><el-icon><ArrowUp /></el-icon
-              ></el-button>
-              <el-button size="small" @click="handleMoveDown('p', scope.$index)"
-                ><el-icon><ArrowDown /></el-icon
-              ></el-button>
-              <el-button size="small" type="danger" @click="handleDelete('p', scope.$index)">
-                <el-icon><Delete /></el-icon>
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+  <v-responsive class="border rounded">
+    <v-app>
+      <v-main>
+        <template v-if="activeName == 'render'">
+          <div id="preview" class="px-10 py-10 mb-4">
+            <h1>项目</h1>
 
-        <el-divider />
+            <article v-if="projects.length">
+              <v-project-card v-for="p in projects" :p="p" />
+            </article>
+            <v-empty-state v-else headline="¯\_(ツ)_/¯"></v-empty-state>
 
-        <h2>
-          事件
-          <el-button @click="handleAdd('e')"
-            ><el-icon><Plus /></el-icon
-          ></el-button>
-        </h2>
-        <el-table :data="events" stripe style="width: 100%">
-          <el-table-column prop="state" label="状态" width="200">
-            <template #default="scope">
-              <el-select v-model="scope.row.state" placeholder="无">
-                <el-option
-                  v-for="item in [
-                    { label: '紧急', value: 'worried' },
-                    { label: '不太紧急', value: 'non-worried' },
-                    { label: '有疑惑', value: 'confused' },
-                    { label: '完成', value: 'ok' },
-                  ]"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column prop="body" label="事件概要" width="300">
-            <template #default="scope">
-              <el-input
-                v-model="scope.row.body"
-                type="textarea"
-                :rows="Math.min(Math.ceil(scope.row.body.length / 18) + 2, 10)"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" min-width="160" fixed="right" align="right">
-            <template #default="scope">
-              <el-button size="small" @click="handleMoveUp('e', scope.$index)"
-                ><el-icon><ArrowUp /></el-icon
-              ></el-button>
-              <el-button size="small" @click="handleMoveDown('e', scope.$index)"
-                ><el-icon><ArrowDown /></el-icon
-              ></el-button>
-              <el-button size="small" type="danger" @click="handleDelete('e', scope.$index)">
-                <el-icon><Delete /></el-icon>
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            <h1>事件</h1>
 
-        <el-divider />
+            <article v-if="events.length">
+              <v-event-card v-for="e in events" :e="e" />
+            </article>
+            <v-empty-state v-else headline="¯\_(ツ)_/¯"></v-empty-state>
+          </div>
+          <div class="px-10 pb-10">
+            <v-btn title="下载" class="mr-4" @click="shotElement('#preview', 'download')"
+              ><v-icon icon="mdi-download"></v-icon
+            ></v-btn>
 
-        <el-button title="导出" @click="handleOutputOption"
-          ><el-icon><Download /></el-icon
-        ></el-button>
-        <el-button title="导入" @click="handleInputOption"
-          ><el-icon><Upload /></el-icon
-        ></el-button>
-      </div>
-    </el-tab-pane>
-  </el-tabs>
-  <el-progress
-    id="scroll-progress"
-    type="circle"
-    :percentage="pageYRatio"
-    :show-text="false"
-    :stroke-width="18"
-    :status="pageYRatio > 99 ? 'exception' : ''"
-    @click="handleRingClicked"
-  />
+            <v-btn title="复制" @click="shotElement('#preview', 'copy')"
+              ><v-icon icon="mdi-content-copy"></v-icon
+            ></v-btn>
+
+            <canvas v-show="false" id="screenshot-container"></canvas>
+          </div>
+        </template>
+
+        <template v-if="activeName == 'options'">
+          <div class="px-10 py-10">
+            <v-card class="px-4 py-4 mb-4">
+              <v-card-title
+                >项目
+                <v-btn class="ml-3" @click="handleAdd('p')"
+                  ><v-icon icon="mdi-plus"></v-icon
+                ></v-btn>
+              </v-card-title>
+
+              <v-table height="35vh" fixed-header>
+                <thead>
+                  <tr>
+                    <th class="text-left">异常</th>
+                    <th class="text-left">所属组织</th>
+                    <th class="text-left">项目名</th>
+                    <th class="text-left">进度</th>
+                    <th class="text-left">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(p, i) of projects">
+                    <td class="py-5">
+                      <v-select
+                        v-model="p.exception"
+                        :items="[
+                          { label: '无', value: undefined },
+                          { label: '失败/放弃', value: 'failed' },
+                          { label: '搁置/卡住/暂停', value: 'stucked' },
+                        ]"
+                        item-title="label"
+                        item-value="value"
+                        single-line
+                        :hide-details="true"
+                      ></v-select>
+                    </td>
+                    <td>
+                      <v-text-field v-model="p.org" :hide-details="true"></v-text-field>
+                    </td>
+                    <td>
+                      <v-text-field v-model="p.project" :hide-details="true"></v-text-field>
+                    </td>
+                    <td>
+                      <v-slider
+                        v-model="p.progress"
+                        :max="1"
+                        :min="0"
+                        :step="0.01"
+                        thumb-label
+                        :hide-details="true"
+                      ></v-slider>
+                    </td>
+                    <td>
+                      <v-btn
+                        icon="mdi-menu-up-outline"
+                        size="small"
+                        class="mr-3"
+                        @click="handleMoveUp('p', i)"
+                      ></v-btn>
+                      <v-btn
+                        icon="mdi-menu-down-outline"
+                        size="small"
+                        class="mr-3"
+                        @click="handleMoveDown('p', i)"
+                      ></v-btn>
+                      <v-btn
+                        icon="mdi-delete-outline"
+                        size="small"
+                        color="red"
+                        @click="handleDelete('p', i)"
+                      ></v-btn>
+                    </td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-card>
+
+            <v-card class="px-4 py-4 mb-4">
+              <v-card-title
+                >事件
+                <v-btn class="ml-3" @click="handleAdd('e')"
+                  ><v-icon icon="mdi-plus"></v-icon
+                ></v-btn>
+              </v-card-title>
+
+              <v-table height="35vh" fixed-header>
+                <thead>
+                  <tr>
+                    <th class="text-left">状态</th>
+                    <th class="text-left">事件概要</th>
+                    <th class="text-left">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(e, i) of events">
+                    <td class="py-5">
+                      <v-select
+                        v-model="e.state"
+                        :items="[
+                          { label: '紧急', value: 'worried' },
+                          { label: '不太紧急', value: 'non-worried' },
+                          { label: '有疑惑', value: 'confused' },
+                          { label: '完成', value: 'ok' },
+                        ]"
+                        item-title="label"
+                        item-value="value"
+                        single-line
+                        :hide-details="true"
+                      ></v-select>
+                    </td>
+                    <td>
+                      <v-textarea v-model="e.body" auto-grow :hide-details="true"></v-textarea>
+                    </td>
+                    <td>
+                      <v-btn
+                        icon="mdi-menu-up-outline"
+                        size="small"
+                        class="mr-3"
+                        @click="handleMoveUp('e', i)"
+                      ></v-btn>
+                      <v-btn
+                        icon="mdi-menu-down-outline"
+                        size="small"
+                        class="mr-3"
+                        @click="handleMoveDown('e', i)"
+                      ></v-btn>
+                      <v-btn
+                        icon="mdi-delete-outline"
+                        size="small"
+                        color="red"
+                        @click="handleDelete('e', i)"
+                      ></v-btn>
+                    </td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-card>
+
+            <v-card class="px-4 py-4 mb-4">
+              <v-card-title>主题</v-card-title>
+              <v-btn-toggle
+                v-model="useCustomTheme().value"
+                :color="useCustomTheme().now('bg-main-reverse')"
+                mandatory
+                divided
+              >
+                <v-btn v-for="o of useCustomTheme().options" :value="o">
+                  {{ o }}
+                </v-btn>
+              </v-btn-toggle>
+            </v-card>
+
+            <v-btn title="导出" class="mr-4" @click="handleOutputOption"
+              ><v-icon icon="mdi-export"></v-icon
+            ></v-btn>
+
+            <v-btn title="导入" @click="handleInputOption"
+              ><v-icon icon="mdi-import"></v-icon
+            ></v-btn>
+          </div>
+        </template>
+
+        <template v-if="activeName == 'about'">
+          <div class="px-10 py-10">
+            <v-card class="mb-4">
+              <v-img
+                src="https://i1.hdslb.com/bfs/activity-plat/static/0977767b2e79d8ad0a36a731068a83d7/1sz3p8w2Sk.png"
+                height="300"
+                cover
+              ></v-img>
+
+              <div class="px-4 py-4">
+                <v-card-title>工作日志美化器</v-card-title>
+                <v-card-subtitle>v1.2.0 | 2025-05-08</v-card-subtitle>
+                <v-card-text>
+                  <p>一个 <b>Penyo/杏仁鹿</b> 的作品。</p>
+                  <p><i>“这个世界，果然还是没有形式主义更好呢~“</i></p>
+                </v-card-text>
+              </div>
+            </v-card>
+
+            <v-list>
+              <v-list-subheader>与开发者联系</v-list-subheader>
+
+              <v-list-item
+                v-for="i of [
+                  {
+                    text: 'GitHub',
+                    icon: 'mdi-github',
+                    action: () => visit('https://github.com/wpy030414'),
+                  },
+                  {
+                    text: '电子邮件',
+                    icon: 'mdi-email',
+                    action: () => visit('mailto:penyoofficial@outlook.com'),
+                  },
+                ]"
+                color="primary"
+                @click="i.action"
+              >
+                <template v-slot:prepend>
+                  <v-icon :icon="i.icon"></v-icon>
+                </template>
+
+                <v-list-item-title v-text="i.text"></v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </div>
+        </template>
+      </v-main>
+
+      <v-bottom-navigation
+        v-model="activeName"
+        :bg-color="useCustomTheme().now('bg-main')"
+        :color="useCustomTheme().now('t-main')"
+        mode="shift"
+        mandatory="force"
+      >
+        <v-btn value="render">
+          <v-icon icon="mdi-television"></v-icon>
+
+          <span>渲染</span>
+        </v-btn>
+
+        <v-btn value="options">
+          <v-icon icon="mdi-cog"></v-icon>
+
+          <span>配置</span>
+        </v-btn>
+
+        <v-btn value="about">
+          <v-icon icon="mdi-information-outline"></v-icon>
+
+          <span>关于</span>
+        </v-btn>
+      </v-bottom-navigation>
+    </v-app>
+  </v-responsive>
+
+  <v-snackbar-queue v-model="useMessage().value"></v-snackbar-queue>
 </template>
 
 <style scoped>
-#c-root {
+#preview {
   background: var(--color-bg-main);
   perspective: 100px;
 
@@ -302,17 +414,5 @@ function handleRingClicked() {}
       margin-bottom: 0;
     }
   }
-}
-
-.el-segmented {
-  --el-segmented-item-selected-bg-color: var(--color-bg-main-reverse);
-}
-
-#scroll-progress {
-  position: fixed;
-  z-index: 999;
-  right: 6rem;
-  bottom: 6rem;
-  zoom: 0.3;
 }
 </style>

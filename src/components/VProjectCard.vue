@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import Item from './Item.vue'
+import VCardX from './VCardX.vue'
 import type { ProjectItem } from '@/types/projectItem'
 
 const { p } = defineProps<{
@@ -23,7 +23,7 @@ const percent = ref(
 </script>
 
 <template>
-  <Item
+  <v-card-x
     :class="['item', p.exception, percent.includes('100%') ? 'done' : '']"
     :style="`--progress: ${percent};`"
     :percent="percent"
@@ -31,7 +31,7 @@ const percent = ref(
     <h2>{{ p.org || '请输入文本' }}</h2>
     <p>{{ p.project || '请输入文本' }}</p>
     <div class="progress"></div>
-  </Item>
+  </v-card-x>
 </template>
 
 <style scoped>
@@ -104,6 +104,10 @@ const percent = ref(
 
   &.done .progress::after {
     background: var(--color-green);
+  }
+
+  & p {
+    margin: -0.2rem 0;
   }
 }
 </style>

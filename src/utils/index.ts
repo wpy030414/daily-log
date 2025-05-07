@@ -1,4 +1,4 @@
-import { ElMessage } from 'element-plus'
+import { useMessage } from '@/stores/messages'
 import html2canvas from 'html2canvas'
 
 export function downloadInBrowser(href: string, filename: string) {
@@ -27,12 +27,12 @@ export function uploadInBrowser(isJSON: boolean = true) {
             const result = e.target?.result as string
             resolve(isJSON ? JSON.parse(result) : result)
           } catch (error) {
-            ElMessage.error('解析 JSON 文件时出错！')
+            // ElMessage.error('解析 JSON 文件时出错！')
             resolve(null)
           }
         }
         reader.onerror = () => {
-          ElMessage.error('读取文件时出错！')
+          // ElMessage.error('读取文件时出错！')
           resolve(null)
         }
         reader.readAsText(file)
@@ -53,7 +53,7 @@ export async function copyToClipboard(data: string | Blob) {
     } else if (data instanceof Blob) {
       await navigator.clipboard.write([new ClipboardItem({ [data.type]: data })])
     }
-    ElMessage.success('已复制到剪切板！')
+    useMessage().success('已复制到剪切板！')
   } catch (e) {
     if (e instanceof Error) {
       const errorMessages = {
@@ -62,7 +62,7 @@ export async function copyToClipboard(data: string | Blob) {
         default: '发生了未知错误！',
       }
       const message = errorMessages[e.name as keyof typeof errorMessages] || errorMessages.default
-      ElMessage.error(message)
+      useMessage().error(message)
       throw new Error(e.message)
     }
   }
@@ -78,7 +78,7 @@ export function shotElement(cssPath: string, method: 'download' | 'copy' = 'down
       case 'download':
         downloadInBrowser(canvas.toDataURL('image/png'), `日志快照-${Date.now()}.png`)
         await new Promise((res) => setTimeout(res, 1000))
-        ElMessage.success('已下载到本地磁盘！')
+        useMessage().success('已下载到本地磁盘！')
         break
       case 'copy':
         const blob = await new Promise<Blob | null>((resolve) =>

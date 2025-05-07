@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import Item from './Item.vue'
+import VCardX from './VCardX.vue'
 import type { EventItem } from '@/types/eventItem'
 import { marked } from 'marked'
 
@@ -10,32 +10,33 @@ defineProps<{
 
 const textMapper = ref(
   new Map([
-    ['worried', '急'],
-    ['non-worried', '缓'],
-    ['confused', '疑'],
-    ['ok', '✓'],
+    ['worried', 'alert-circle-outline'],
+    ['non-worried', 'timetable'],
+    ['confused', 'emoticon-confused-outline'],
+    ['ok', 'check'],
   ]),
 )
 </script>
 
 <template>
-  <Item class="item">
-    <span :class="['s', e.state]">{{ textMapper.get(e.state) }}</span>
+  <v-card-x class="item">
+    <span :class="['s', e.state, 'mr-4']"
+      ><v-icon :icon="'mdi-' + textMapper.get(e.state)" size="small"></v-icon
+    ></span>
     <p v-html="marked.parse(e.body) || '请输入文本'"></p>
-  </Item>
+  </v-card-x>
 </template>
 
 <style scoped>
 .item {
   display: grid;
-  grid-template-columns: calc(28px + 0.5rem) 1fr;
+  grid-template-columns: calc(28px + 2rem) 1fr;
 
   & .s {
     display: inline-block;
     padding: 0.1rem 0.4rem;
     border-radius: 0.3rem;
-    width: 1rem;
-    height: 1.2rem;
+    height: 1.7rem;
     color: var(--color-t-main-reverse);
     text-align: center;
   }
@@ -82,7 +83,7 @@ const textMapper = ref(
 
   & p {
     color: var(--color-t-main);
-    line-height: 1.4rem;
+    line-height: 1.7rem;
   }
 }
 </style>

@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
-export const useTheme = defineStore(
+export const useCustomTheme = defineStore(
   'theme',
   () => {
-    const value = ref('海湾蓝')
+    const value = ref('青葱绿')
 
     const options = new Map([
       ['西洋紫', 'pink'],
       ['火山红', 'red'],
       ['青葱绿', 'green'],
-      ['海湾蓝', 'blue'],
+      ['远空蓝', 'blue'],
     ])
 
     watch(
@@ -21,7 +21,21 @@ export const useTheme = defineStore(
       { immediate: true },
     )
 
-    return { value, options: Array.from(options.keys()) }
+    const now = computed(() => {
+      console.debug(value.value)
+
+      return (
+        type:
+          | 'bg-main'
+          | 'bg-sub'
+          | 't-main'
+          | 'bg-main-reverse'
+          | 'bg-sub-reverse'
+          | 't-main-reverse',
+      ) => window.getComputedStyle(document.documentElement).getPropertyValue(`--color-${type}`)
+    })
+
+    return { value, options: Array.from(options.keys()), now }
   },
   {
     persist: true,
