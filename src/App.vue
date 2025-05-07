@@ -5,7 +5,8 @@ import { useProjectStore } from './stores/projects'
 import EventItem from './components/EventItem.vue'
 import ProjectItem from './components/ProjectItem.vue'
 import { downloadInBrowser, shotElement, uploadInBrowser } from './utils'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { useTheme } from './stores/theme'
 
 const activeName = ref('home')
 
@@ -150,6 +151,8 @@ function handleRingClicked() {}
         <el-button title="复制" @click="shotElement('#c-root', 'copy')"
           ><el-icon><CopyDocument /></el-icon
         ></el-button>
+        &nbsp;
+        <el-segmented v-model="useTheme().value" :options="useTheme().options" color="red" />
         <canvas v-show="false" id="screenshot-container"></canvas>
       </div>
     </el-tab-pane>
@@ -232,9 +235,13 @@ function handleRingClicked() {}
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column prop="body" label="事件概要" width="200">
+          <el-table-column prop="body" label="事件概要" width="300">
             <template #default="scope">
-              <el-input v-model="scope.row.body" type="textarea" />
+              <el-input
+                v-model="scope.row.body"
+                type="textarea"
+                :rows="Math.min(Math.ceil(scope.row.body.length / 18) + 2, 10)"
+              />
             </template>
           </el-table-column>
           <el-table-column label="操作" min-width="160" fixed="right" align="right">
@@ -295,6 +302,10 @@ function handleRingClicked() {}
       margin-bottom: 0;
     }
   }
+}
+
+.el-segmented {
+  --el-segmented-item-selected-bg-color: var(--color-bg-main-reverse);
 }
 
 #scroll-progress {
