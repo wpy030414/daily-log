@@ -27,12 +27,12 @@ export function uploadInBrowser(isJSON: boolean = true) {
             const result = e.target?.result as string
             resolve(isJSON ? JSON.parse(result) : result)
           } catch (error) {
-            // ElMessage.error('解析 JSON 文件时出错！')
+            useMessage().error('解析 JSON 文件时出错！')
             resolve(null)
           }
         }
         reader.onerror = () => {
-          // ElMessage.error('读取文件时出错！')
+          useMessage().error('读取文件时出错！')
           resolve(null)
         }
         reader.readAsText(file)
@@ -69,6 +69,11 @@ export async function copyToClipboard(data: string | Blob) {
 }
 
 export function shotElement(cssPath: string, method: 'download' | 'copy' = 'download') {
+  if (window.innerWidth >= window.screen.width / 3) {
+    alert('请您先最窄化窗口再操作！')
+    return
+  }
+
   html2canvas(document.querySelector(cssPath)!, { scale: 3 }).then(async (canvas) => {
     const screenshotContainer = document.getElementById('screenshot-container')!
     screenshotContainer.innerHTML = ''

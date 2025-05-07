@@ -1,6 +1,6 @@
 {
   "name": "daily-log",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -24,7 +24,7 @@
   "devDependencies": {
     "@mdi/font": "^7.4.47",
     "@tsconfig/node22": "^22.0.1",
-    "@types/node": "^22.15.14",
+    "@types/node": "^22.15.15",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
     "npm-run-all2": "^8.0.1",
