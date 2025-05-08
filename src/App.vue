@@ -50,7 +50,7 @@ window.msg = useMessage()
     </v-app>
   </v-responsive>
 
-  <v-snackbar-queue v-model="useMessage().value"></v-snackbar-queue>
+  <v-snackbar-queue :timeout="useMessage().timeout" v-model="useMessage().value"></v-snackbar-queue>
 </template>
 
 <style scoped></style>

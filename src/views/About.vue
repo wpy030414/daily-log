@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import { useCustomTheme } from '@/stores/custom-theme'
+import { useMessage } from '@/stores/messages'
 import { marked } from 'marked'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const showLog = ref(false)
 
 const logs = [
+  {
+    isBreakthrough: false,
+    date: '2025-05-08',
+    v: '1.2.3',
+    description: `- 新增“彩蛋”，快来寻找吧！
+- 新增“麦秆黄”主题
+- 调整配置表格渲染方式`,
+  },
   {
     isBreakthrough: false,
     date: '2025-05-08',
@@ -109,12 +118,46 @@ function visit(url: string) {
   a.click()
   a.remove()
 }
+
+const knockCounter = ref(0)
+const showEasterEgg = ref(false)
+
+watch(knockCounter, (nv) => {
+  if (nv > 8) {
+    useMessage().warning('（笼子已经打开过了）')
+  } else if (nv == 8) {
+    useMessage().success('“嗷呜！”（猛猫出笼）')
+    showEasterEgg.value = true
+  } else if (nv >= 5) {
+    useMessage().info(`再点击${8 - nv}次说不定会发生奇妙的事情呢？`)
+  }
+})
+
+const flirtCounter = ref(0)
+
+function flirt() {
+  if (flirtCounter.value > 6) {
+    useMessage().error('（猫猫已经不在这里了）')
+    return
+  } else if (flirtCounter.value > 5) {
+    useMessage().warning('（猫猫飞也似地逃走了！）')
+  } else {
+    const l = [
+      '（猫猫拨弄了你一下）',
+      '（猫猫愣住了！）',
+      '（猫猫朝你哈气了！）',
+      '（猫猫扭头看了你一眼）',
+    ]
+    useMessage().info(l[Math.floor(Math.random() * l.length)])
+  }
+  flirtCounter.value++
+}
 </script>
 
 <template>
   <div class="px-10 py-10">
     <v-card class="mb-4">
-      <v-img src="background.png" height="300" cover></v-img>
+      <v-img src="background.png" height="300" cover @click="knockCounter++"></v-img>
 
       <div class="px-4 py-4">
         <v-card-title>工作日志美化器</v-card-title>
@@ -174,6 +217,28 @@ function visit(url: string) {
             text: '电子邮件',
             icon: 'mdi-email',
             action: () => visit('mailto:penyoofficial@outlook.com'),
+          },
+        ]"
+        color="primary"
+        @click="i.action"
+      >
+        <template v-slot:prepend>
+          <v-icon :icon="i.icon"></v-icon>
+        </template>
+
+        <v-list-item-title v-text="i.text"></v-list-item-title>
+      </v-list-item>
+    </v-list>
+
+    <v-list v-if="showEasterEgg">
+      <v-list-subheader>彩蛋</v-list-subheader>
+
+      <v-list-item
+        v-for="i of [
+          {
+            text: '调戏小猫',
+            icon: 'mdi-cat',
+            action: () => flirt(),
           },
         ]"
         color="primary"

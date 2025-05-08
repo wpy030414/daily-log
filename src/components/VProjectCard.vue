@@ -40,7 +40,7 @@ const percent = ref(
     position: relative;
     width: calc(100% - 3 * 2.5rem);
     height: 0.3rem;
-    margin-top: 0.5rem;
+    margin: 0.5rem 0 0.3rem;
     border-radius: 0.15rem;
     background: #00000022;
     overflow: hidden;
@@ -107,7 +107,7 @@ const percent = ref(
   }
 
   & p {
-    margin: -0.2rem 0;
+    margin: -0.1rem 0;
   }
 }
 </style>

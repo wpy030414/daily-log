@@ -2,9 +2,13 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useMessage = defineStore('msgs', () => {
+  const timeout = ref(2000)
   const value = ref<any[]>([])
 
-  function push(text: string, color: string) {
+  async function push(text: string, color: string) {
+    timeout.value = 0
+    await new Promise((res) => setTimeout(res, 10))
+    timeout.value = 2000
     value.value.push({
       text,
       color,
@@ -28,5 +32,5 @@ export const useMessage = defineStore('msgs', () => {
     push(text, 'error')
   }
 
-  return { value, success, info, warning, error }
+  return { timeout, value, success, info, warning, error }
 })

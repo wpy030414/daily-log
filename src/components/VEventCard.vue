@@ -20,9 +20,9 @@ const textMapper = ref(
 
 <template>
   <v-card-x class="item">
-    <span :class="['s', e.state, 'mr-4']"
-      ><v-icon :icon="'mdi-' + textMapper.get(e.state)" size="small"></v-icon
-    ></span>
+    <span :class="['s', e.state, 'mr-4']">
+      <v-icon :icon="'mdi-' + textMapper.get(e.state)" size="small"></v-icon>
+    </span>
     <p v-html="marked.parse(e.body) || '请输入文本'"></p>
   </v-card-x>
 </template>

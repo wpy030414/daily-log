@@ -97,17 +97,32 @@ async function handleInputOption() {
   <div class="px-10 py-10">
     <template v-if="useWidthRate().value > 0.9">
       <v-card class="px-4 py-4 mb-4">
-        <v-card-title
-          >项目
+        <v-card-title>主题</v-card-title>
+        <v-btn-toggle
+          v-model="useCustomTheme().value"
+          :color="useCustomTheme().now('bg-main-reverse')"
+          mandatory
+          divided
+          variant="outlined"
+        >
+          <v-btn v-for="o of useCustomTheme().options" :value="o">
+            {{ o }}
+          </v-btn>
+        </v-btn-toggle>
+      </v-card>
+
+      <v-card class="px-4 py-4 mb-4">
+        <v-card-title>
+          项目
           <v-btn class="ml-3" @click="handleAdd('p')"><v-icon icon="mdi-plus"></v-icon></v-btn>
         </v-card-title>
 
-        <v-table height="35vh" fixed-header>
+        <v-table height="45vh" fixed-header>
           <thead>
             <tr>
               <th class="text-left" width="300">异常</th>
-              <th class="text-left" width="300">所属组织</th>
-              <th class="text-left" width="300">项目名</th>
+              <th class="text-left" width="400">所属组织</th>
+              <th class="text-left">项目名</th>
               <th class="text-left" width="300">进度</th>
               <th class="text-right" width="300">操作</th>
             </tr>
@@ -142,7 +157,11 @@ async function handleInputOption() {
                   :step="0.01"
                   thumb-label
                   :hide-details="true"
-                ></v-slider>
+                >
+                  <template v-slot:thumb-label="{ modelValue }">
+                    {{ (modelValue * 100).toFixed(0) + '%' }}
+                  </template>
+                </v-slider>
               </td>
               <td class="text-right">
                 <v-btn
@@ -170,16 +189,16 @@ async function handleInputOption() {
       </v-card>
 
       <v-card class="px-4 py-4 mb-4">
-        <v-card-title
-          >事件
+        <v-card-title>
+          事件
           <v-btn class="ml-3" @click="handleAdd('e')"><v-icon icon="mdi-plus"></v-icon></v-btn>
         </v-card-title>
 
-        <v-table height="35vh" fixed-header>
+        <v-table height="45vh" fixed-header>
           <thead>
             <tr>
               <th class="text-left" width="300">状态</th>
-              <th class="text-left" width="500">事件概要</th>
+              <th class="text-left">事件概要</th>
               <th class="text-right" width="300">操作</th>
             </tr>
           </thead>
@@ -228,27 +247,13 @@ async function handleInputOption() {
         </v-table>
       </v-card>
 
-      <v-card class="px-4 py-4 mb-4">
-        <v-card-title>主题</v-card-title>
-        <v-btn-toggle
-          v-model="useCustomTheme().value"
-          :color="useCustomTheme().now('bg-main-reverse')"
-          mandatory
-          divided
-        >
-          <v-btn v-for="o of useCustomTheme().options" :value="o">
-            {{ o }}
-          </v-btn>
-        </v-btn-toggle>
-      </v-card>
-
-      <v-btn title="导出" class="mr-4" @click="handleOutputOption"
-        ><v-icon icon="mdi-export"></v-icon
-      ></v-btn>
+      <v-btn title="导出" class="mr-4" @click="handleOutputOption">
+        <v-icon icon="mdi-export"></v-icon>
+      </v-btn>
 
       <v-btn title="导入" @click="handleInputOption"><v-icon icon="mdi-import"></v-icon></v-btn>
     </template>
-    <template v-else> 请您先全屏化窗口再操作！ </template>
+    <template v-else>请您先全屏化窗口再操作！</template>
   </div>
 </template>
 

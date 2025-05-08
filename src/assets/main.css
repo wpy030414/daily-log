@@ -24,6 +24,10 @@
     --h: 0;
   }
 
+  &[theme='yellow'] {
+    --h: 45;
+  }
+
   &[theme='green'] {
     --h: 120;
   }

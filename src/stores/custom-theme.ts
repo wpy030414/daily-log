@@ -7,8 +7,9 @@ export const useCustomTheme = defineStore(
     const value = ref('青葱绿')
 
     const options = new Map([
-      ['西洋紫', 'pink'],
-      ['火山红', 'red'],
+      ['罗兰紫', 'pink'],
+      ['烈焰红', 'red'],
+      ['麦秆黄', 'yellow'],
       ['青葱绿', 'green'],
       ['远空蓝', 'blue'],
     ])
@@ -16,6 +17,9 @@ export const useCustomTheme = defineStore(
     watch(
       value,
       () => {
+        if (!Array.from(options.keys()).includes(value.value)) {
+          value.value = '青葱绿'
+        }
         document.documentElement.setAttribute('theme', '' + options.get(value.value))
       },
       { immediate: true },

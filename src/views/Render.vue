@@ -23,13 +23,13 @@ import { shotElement } from '@/utils'
     <v-empty-state v-else headline="¯\_(ツ)_/¯"></v-empty-state>
   </div>
   <div class="px-10 pb-10">
-    <v-btn title="下载" class="mr-4" @click="shotElement('#preview', 'download')"
-      ><v-icon icon="mdi-download"></v-icon
-    ></v-btn>
+    <v-btn title="下载" class="mr-4" @click="shotElement('#preview', 'download')">
+      <v-icon icon="mdi-download"></v-icon>
+    </v-btn>
 
-    <v-btn title="复制" @click="shotElement('#preview', 'copy')"
-      ><v-icon icon="mdi-content-copy"></v-icon
-    ></v-btn>
+    <v-btn title="复制" @click="shotElement('#preview', 'copy')">
+      <v-icon icon="mdi-content-copy"></v-icon>
+    </v-btn>
 
     <canvas v-show="false" id="screenshot-container"></canvas>
   </div>
