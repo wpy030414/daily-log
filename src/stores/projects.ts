@@ -2,12 +2,12 @@ import type { ProjectItem } from '@/types/projectItem'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useProjectStore = defineStore(
+export const useProject = defineStore(
   'projects',
   () => {
-    const projects = ref<ProjectItem[]>([])
+    const value = ref<ProjectItem[]>([])
 
-    return { projects }
+    return { value }
   },
   {
     persist: true,

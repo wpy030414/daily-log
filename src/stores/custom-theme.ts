@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 
 export const useCustomTheme = defineStore(
-  'theme',
+  'custom-themes',
   () => {
     const value = ref('青葱绿')
 

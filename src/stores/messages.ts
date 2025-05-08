@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useMessage = defineStore('msg', () => {
+export const useMessage = defineStore('msgs', () => {
   const value = ref<any[]>([])
 
   function push(text: string, color: string) {

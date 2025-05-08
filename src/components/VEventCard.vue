@@ -36,7 +36,7 @@ const textMapper = ref(
     display: inline-block;
     padding: 0.1rem 0.4rem;
     border-radius: 0.3rem;
-    height: 1.7rem;
+    height: 1.8rem;
     color: var(--color-t-main-reverse);
     text-align: center;
   }
@@ -83,7 +83,7 @@ const textMapper = ref(
 
   & p {
     color: var(--color-t-main);
-    line-height: 1.7rem;
+    line-height: 1.8rem;
   }
 }
 </style>

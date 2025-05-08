@@ -10,7 +10,7 @@ export default defineConfig({
     vue(),
     basicSsl({
       name: 'Penyo',
-      domains: ['oss.ahkdxx.cn', 'nas.localhost'],
+      domains: ['nas.ahkdxx.cn', 'nas.localhost'],
       certDir: 'dist/cert',
     }),
     vueDevTools(),

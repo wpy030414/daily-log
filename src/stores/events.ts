@@ -2,12 +2,12 @@ import type { EventItem } from '@/types/eventItem'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useEventStore = defineStore(
+export const useEvent = defineStore(
   'events',
   () => {
-    const events = ref<EventItem[]>([])
+    const value = ref<EventItem[]>([])
 
-    return { events }
+    return { value }
   },
   {
     persist: true,

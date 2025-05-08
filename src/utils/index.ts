@@ -1,4 +1,5 @@
 import { useMessage } from '@/stores/messages'
+import { useWidthRate } from '@/stores/width-rate'
 import html2canvas from 'html2canvas'
 
 export function downloadInBrowser(href: string, filename: string) {
@@ -69,8 +70,8 @@ export async function copyToClipboard(data: string | Blob) {
 }
 
 export function shotElement(cssPath: string, method: 'download' | 'copy' = 'download') {
-  if (window.innerWidth >= window.screen.width / 3) {
-    alert('请您先最窄化窗口再操作！')
+  if (useWidthRate().value > 0.33) {
+    useMessage().warning('请您先最窄化窗口再操作！')
     return
   }
 
