@@ -24,13 +24,26 @@ const percent = ref(
 
 <template>
   <v-card-x
-    :class="['item', p.exception, percent.includes('100%') ? 'done' : '']"
+    :class="['item', p.exception, percent.includes('100%') ? 'done' : '', 'd-flex']"
     :style="`--progress: ${percent};`"
-    :percent="percent"
   >
-    <h2>{{ p.org || '请输入文本' }}</h2>
-    <p>{{ p.project || '请输入文本' }}</p>
-    <div class="progress"></div>
+    <div class="item-main" style="flex: 4" :percent="percent">
+      <h2>{{ p.org || '请输入文本' }}</h2>
+      <p>{{ p.project || '请输入文本' }}</p>
+      <div class="progress"></div>
+    </div>
+
+    <v-divider :vertical="true" class="mx-4"></v-divider>
+
+    <div class="d-flex flex-column justify-center" style="flex: 1.1">
+      <p class="text-center">
+        {{
+          percent.includes('100%')
+            ? '已完结'
+            : '还剩 ' + (p.remaining != undefined ? p.remaining : '?') + ' 天'
+        }}
+      </p>
+    </div>
   </v-card-x>
 </template>
 
@@ -56,21 +69,37 @@ const percent = ref(
     }
   }
 
-  &::after {
-    content: attr(percent);
+  & .item-main {
+    position: relative;
+
+    &::after {
+      content: attr(percent);
+      position: absolute;
+      right: -0.2rem;
+      bottom: -1.65rem;
+      color: var(--color-t-main);
+      font-family: 'JetBrains Mono';
+      font-size: 3rem;
+      opacity: 0.05;
+    }
   }
 
   &:hover,
   &.hl {
     background: var(--color-bg-main-reverse);
     color: var(--color-t-main-reverse);
+
+    & .item-main::after {
+      color: var(--color-t-main-reverse);
+      opacity: 0.3;
+    }
   }
 
   &.failed {
     background: var(--color-red);
     color: var(--color-t-main-reverse);
 
-    &::after {
+    & .item-main::after {
       color: var(--color-t-main-reverse);
       opacity: 0.3;
     }
@@ -88,7 +117,7 @@ const percent = ref(
     background: var(--color-orange);
     color: var(--color-t-main-reverse);
 
-    &::after {
+    & .item-main::after {
       color: var(--color-t-main-reverse);
       opacity: 0.3;
     }

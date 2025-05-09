@@ -4,7 +4,8 @@ import { computed, ref, watch } from 'vue'
 export const useCustomTheme = defineStore(
   'custom-themes',
   () => {
-    const value = ref('青葱绿')
+    const defaultValue = '烈焰红'
+    const value = ref(defaultValue)
 
     const options = new Map([
       ['罗兰紫', 'pink'],
@@ -18,7 +19,7 @@ export const useCustomTheme = defineStore(
       value,
       () => {
         if (!Array.from(options.keys()).includes(value.value)) {
-          value.value = '青葱绿'
+          value.value = defaultValue
         }
         document.documentElement.setAttribute('theme', '' + options.get(value.value))
       },

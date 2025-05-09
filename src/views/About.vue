@@ -8,20 +8,22 @@ const showLog = ref(false)
 
 const logs = [
   {
+    isBreakthrough: true,
+    date: '2025-05-09',
+    v: '1.3.0',
+    description: `- 日志增加自定义页脚，“项目”新增“剩余日”维度`,
+  },
+  {
     isBreakthrough: false,
     date: '2025-05-08',
     v: '1.2.3',
-    description: `- 新增“彩蛋”，快来寻找吧！
-- 新增“麦秆黄”主题
-- 调整配置表格渲染方式`,
+    description: `- 新增“彩蛋”，快来寻找吧！`,
   },
   {
     isBreakthrough: false,
     date: '2025-05-08',
     v: '1.2.2',
-    description: `- 优化了状态中心设计
-- 使用路由代替组件插槽
-- 内置了更新日志`,
+    description: `- 使用路由代替组件插槽`,
   },
   {
     isBreakthrough: false,
@@ -93,15 +95,13 @@ const logs = [
     isBreakthrough: true,
     date: '2025-03-12',
     v: '1.0.0',
-    description: `- 正式版发布，欢迎使用！
-- 抽取了类型定义`,
+    description: `- 正式版发布，欢迎使用！`,
   },
   {
     isBreakthrough: false,
     date: '2025-03-12',
     v: 'INDEV-0.0.1',
-    description: `- 现在项目/事件可以被手动高亮了
-- 抽取了主题定义`,
+    description: `- 现在“项目/事件”可以被手动高亮了`,
   },
   {
     isBreakthrough: true,
@@ -119,27 +119,34 @@ function visit(url: string) {
   a.remove()
 }
 
-const knockCounter = ref(0)
+const knockCounter = ref({
+  value: 0,
+  trigger: 8,
+  preTrigger: 5,
+})
+
 const showEasterEgg = ref(false)
 
-watch(knockCounter, (nv) => {
-  if (nv > 8) {
-    useMessage().warning('（笼子已经打开过了）')
-  } else if (nv == 8) {
-    useMessage().success('“嗷呜！”（猛猫出笼）')
+watch(knockCounter.value, (nv) => {
+  if (nv.value == knockCounter.value.trigger) {
     showEasterEgg.value = true
-  } else if (nv >= 5) {
-    useMessage().info(`再点击${8 - nv}次说不定会发生奇妙的事情呢？`)
+    useMessage().success('“嗷呜！”（猛猫降临）')
+  } else if (nv.value >= knockCounter.value.preTrigger) {
+    useMessage().info(`再点击${knockCounter.value.trigger - nv.value}次说不定会发生奇妙的事情呢？`)
   }
 })
 
-const flirtCounter = ref(0)
+const flirtCounter = ref({
+  value: 0,
+  trigger: 6,
+  preTrigger: 5,
+})
 
 function flirt() {
-  if (flirtCounter.value > 6) {
+  if (flirtCounter.value.value > flirtCounter.value.trigger) {
     useMessage().error('（猫猫已经不在这里了）')
     return
-  } else if (flirtCounter.value > 5) {
+  } else if (flirtCounter.value.value > flirtCounter.value.preTrigger) {
     useMessage().warning('（猫猫飞也似地逃走了！）')
   } else {
     const l = [
@@ -150,14 +157,70 @@ function flirt() {
     ]
     useMessage().info(l[Math.floor(Math.random() * l.length)])
   }
-  flirtCounter.value++
+  flirtCounter.value.value++
+}
+
+const showMysteriousDialog = ref(false)
+const code = ref()
+
+watch(showMysteriousDialog, (nv) => {
+  if (!nv) {
+    code.value = undefined
+  }
+})
+
+function findMyCat() {
+  if (code.value != 114514) {
+    useMessage().error('啊哦，好像不对耶！再试试别的吧~')
+    return
+  }
+  flirtCounter.value.value = 0
+  showMysteriousDialog.value = false
+  useMessage().success('“嗷呜！”（猛猫再次降临）')
 }
 </script>
 
 <template>
+  <v-navigation-drawer v-if="showLog" :width="500">
+    <v-timeline side="end">
+      <v-timeline-item
+        v-for="(log, i) of logs"
+        :dot-color="
+          !i
+            ? useCustomTheme().now('bg-main-reverse')
+            : log.isBreakthrough
+              ? useCustomTheme().now('bg-sub')
+              : useCustomTheme().now('bg-main')
+        "
+        size="small"
+      >
+        <template v-slot:opposite>
+          <p class="mr-4 text-grey">{{ log.date }}</p>
+        </template>
+
+        <div>
+          <strong>{{ log.v }}</strong>
+          <div class="text-caption" v-html="marked.parse(log.description)"></div>
+        </div>
+      </v-timeline-item>
+    </v-timeline>
+  </v-navigation-drawer>
+
   <div class="px-10 py-10">
     <v-card class="mb-4">
-      <v-img src="background.png" height="300" cover @click="knockCounter++"></v-img>
+      <v-img ref="picture" src="background.png" height="300" cover>
+        <v-toolbar color="transparent">
+          <template v-slot:prepend>
+            <v-btn icon="mdi-menu" @click="showLog = !showLog"></v-btn>
+          </template>
+
+          <template v-slot:append>
+            <v-btn v-if="knockCounter.value < knockCounter.trigger" @click="knockCounter.value++"
+              >召唤神兽</v-btn
+            >
+          </template>
+        </v-toolbar>
+      </v-img>
 
       <div class="px-4 py-4">
         <v-card-title>工作日志美化器</v-card-title>
@@ -167,40 +230,6 @@ function flirt() {
           <p><i>“这个世界，果然还是没有形式主义更好呢~“</i></p>
         </v-card-text>
       </div>
-
-      <v-card-actions>
-        <v-spacer></v-spacer>
-
-        <v-btn @click="showLog = !showLog">{{ showLog ? '收起' : '展开更新日志' }}</v-btn>
-      </v-card-actions>
-
-      <v-expand-transition>
-        <div v-show="showLog">
-          <v-divider></v-divider>
-
-          <v-timeline side="end">
-            <v-timeline-item
-              v-for="(log, i) of logs"
-              :dot-color="
-                !i
-                  ? useCustomTheme().now('bg-main-reverse')
-                  : log.isBreakthrough
-                    ? useCustomTheme().now('bg-sub')
-                    : useCustomTheme().now('bg-main')
-              "
-              size="small"
-            >
-              <template v-slot:opposite>
-                <p class="mr-4 text-grey">{{ log.date }}</p>
-              </template>
-              <div>
-                <strong>{{ log.v }}</strong>
-                <div class="text-caption" v-html="marked.parse(log.description)"></div>
-              </div>
-            </v-timeline-item>
-          </v-timeline>
-        </div>
-      </v-expand-transition>
     </v-card>
 
     <v-list>
@@ -235,11 +264,18 @@ function flirt() {
 
       <v-list-item
         v-for="i of [
-          {
-            text: '调戏小猫',
-            icon: 'mdi-cat',
-            action: () => flirt(),
-          },
+          [
+            {
+              text: '调戏小猫',
+              icon: 'mdi-cat',
+              action: flirt,
+            },
+            {
+              text: '寻找小猫',
+              icon: 'mdi-magnify',
+              action: () => (showMysteriousDialog = true),
+            },
+          ][Number(flirtCounter.value > flirtCounter.trigger)],
         ]"
         color="primary"
         @click="i.action"
@@ -252,6 +288,21 @@ function flirt() {
       </v-list-item>
     </v-list>
   </div>
+
+  <v-dialog v-model="showMysteriousDialog" max-width="600" persistent>
+    <v-form validate-on="blur" @submit.prevent="findMyCat">
+      <v-card title="据说只要输入神奇的代码就能找到丢失的猫猫？">
+        <v-otp-input v-model="code" length="6"></v-otp-input>
+        <template v-slot:actions>
+          <v-spacer></v-spacer>
+
+          <v-btn @click="showMysteriousDialog = false"> 先容我想想 </v-btn>
+
+          <v-btn type="submit"> 验证 </v-btn>
+        </template>
+      </v-card>
+    </v-form>
+  </v-dialog>
 </template>
 
 <style scoped></style>

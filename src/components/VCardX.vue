@@ -30,27 +30,9 @@ function handleHighlighted() {
     will-change: background-color, color;
   }
 
-  &:hover,
-  &.hl {
-    &::after {
-      color: var(--color-t-main-reverse);
-      opacity: 0.3;
-    }
-  }
-
   &:hover {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     transform: translateZ(1px);
-  }
-
-  &::after {
-    position: absolute;
-    right: 0.8rem;
-    bottom: -1.2rem;
-    color: var(--color-t-main);
-    font-family: 'JetBrains Mono';
-    font-size: 3rem;
-    opacity: 0.05;
   }
 }
 </style>

@@ -5,11 +5,11 @@ import { useProject } from '@/stores/projects'
 import { useCustomTheme } from '@/stores/custom-theme'
 import { downloadInBrowser, uploadInBrowser } from '@/utils'
 import { useWidthRate } from '@/stores/width-rate'
+import { useFooter } from '@/stores/footer'
 
 function handleAdd(objType: 'p' | 'e') {
   if (objType === 'p') {
     useProject().value.push({
-      exception: undefined,
       org: '罗德岛',
       project: '源石计划',
       progress: 0,
@@ -97,18 +97,41 @@ async function handleInputOption() {
   <div class="px-10 py-10">
     <template v-if="useWidthRate().value > 0.9">
       <v-card class="px-4 py-4 mb-4">
-        <v-card-title>主题</v-card-title>
-        <v-btn-toggle
-          v-model="useCustomTheme().value"
-          :color="useCustomTheme().now('bg-main-reverse')"
-          mandatory
-          divided
-          variant="outlined"
-        >
-          <v-btn v-for="o of useCustomTheme().options" :value="o">
-            {{ o }}
-          </v-btn>
-        </v-btn-toggle>
+        <v-card-title>外观</v-card-title>
+        <v-row class="mx-4 mt-2 mb-4">
+          <div class="d-flex flex-column justify-center">
+            <v-btn-toggle
+              v-model="useCustomTheme().value"
+              :color="useCustomTheme().now('bg-main-reverse')"
+              mandatory
+              divided
+              variant="outlined"
+            >
+              <v-btn v-for="o of useCustomTheme().options" :value="o">
+                {{ o }}
+              </v-btn>
+            </v-btn-toggle>
+          </div>
+
+          <v-divider class="mx-4" :vertical="true"></v-divider>
+
+          <div>
+            <v-switch
+              v-model="useFooter().value"
+              label="启用页脚"
+              :color="useCustomTheme().now('bg-main-reverse')"
+              :hide-details="true"
+            ></v-switch>
+          </div>
+          <div v-if="useFooter().value" class="ml-4">
+            <v-text-field
+              v-model="useFooter().line"
+              width="300"
+              label="页脚签名"
+              :hide-details="true"
+            ></v-text-field>
+          </div>
+        </v-row>
       </v-card>
 
       <v-card class="px-4 py-4 mb-4">
@@ -121,9 +144,10 @@ async function handleInputOption() {
           <thead>
             <tr>
               <th class="text-left" width="300">异常</th>
-              <th class="text-left" width="400">所属组织</th>
+              <th class="text-left" width="300">所属组织</th>
               <th class="text-left">项目名</th>
               <th class="text-left" width="300">进度</th>
+              <th class="text-left" width="300">剩余日</th>
               <th class="text-right" width="300">操作</th>
             </tr>
           </thead>
@@ -162,6 +186,13 @@ async function handleInputOption() {
                     {{ (modelValue * 100).toFixed(0) + '%' }}
                   </template>
                 </v-slider>
+              </td>
+              <td>
+                <v-number-input
+                  v-model="p.remaining"
+                  control-variant="split"
+                  :hide-details="true"
+                ></v-number-input>
               </td>
               <td class="text-right">
                 <v-btn
@@ -247,11 +278,14 @@ async function handleInputOption() {
         </v-table>
       </v-card>
 
-      <v-btn title="导出" class="mr-4" @click="handleOutputOption">
-        <v-icon icon="mdi-export"></v-icon>
-      </v-btn>
-
-      <v-btn title="导入" @click="handleInputOption"><v-icon icon="mdi-import"></v-icon></v-btn>
+      <div class="mb-4">
+        <v-btn title="导出数据" class="mr-4" @click="handleOutputOption">
+          <v-icon icon="mdi-export"></v-icon>
+        </v-btn>
+        <v-btn title="导入数据" @click="handleInputOption"
+          ><v-icon icon="mdi-import"></v-icon
+        ></v-btn>
+      </div>
     </template>
     <template v-else>请您先全屏化窗口再操作！</template>
   </div>

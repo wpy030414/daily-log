@@ -7,7 +7,7 @@ export const useMessage = defineStore('msgs', () => {
 
   async function push(text: string, color: string) {
     timeout.value = 0
-    await new Promise((res) => setTimeout(res, 10))
+    await new Promise((res) => setTimeout(res, 1))
     timeout.value = 2000
     value.value.push({
       text,

@@ -18,7 +18,11 @@ window.msg = useMessage()
   <v-responsive class="border rounded">
     <v-app>
       <v-main>
-        <router-view></router-view>
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component :is="Component" :key="$route.name" />
+          </keep-alive>
+        </router-view>
       </v-main>
 
       <v-bottom-navigation

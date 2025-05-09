@@ -28,4 +28,9 @@ export interface ProjectItem {
    * 只能从连续范围内取值：[0, 1]，超出则自动修正为距离最近的上下界。
    */
   progress: number
+
+  /**
+   * 剩余日
+   */
+  remaining?: number
 }
