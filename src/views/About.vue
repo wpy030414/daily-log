@@ -4,9 +4,15 @@ import { useMessage } from '@/stores/messages'
 import { marked } from 'marked'
 import { ref, watch } from 'vue'
 
-const showLog = ref(false)
+const showLog = ref(true)
 
 const logs = [
+  {
+    isBreakthrough: false,
+    date: '2025-05-13',
+    v: '1.3.1',
+    description: `- 允许用户自定义页脚图片`,
+  },
   {
     isBreakthrough: true,
     date: '2025-05-09',

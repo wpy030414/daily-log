@@ -24,7 +24,7 @@ import { shotElement } from '@/utils'
     </article>
     <v-empty-state v-else headline="¯\_(ツ)_/¯"></v-empty-state>
 
-    <v-img v-if="useFooter().value" src="footer.png" class="footer-img" cover>
+    <v-img v-if="useFooter().value" :src="useFooter().img || 'footer.png'" class="footer-img" cover>
       <v-chip class="footer-chip" :color="useCustomTheme().now('t-main')" size="small">
         {{ useFooter().line }}
       </v-chip>

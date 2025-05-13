@@ -91,6 +91,16 @@ async function handleInputOption() {
     useMessage().info('您取消了操作。')
   }
 }
+
+function handleUpdateImage(file: File | File[]) {
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    useFooter().img = (e.target as FileReader).result
+  }
+  reader.readAsDataURL(file as Blob)
+}
 </script>
 
 <template>
@@ -123,14 +133,27 @@ async function handleInputOption() {
               :hide-details="true"
             ></v-switch>
           </div>
-          <div v-if="useFooter().value" class="ml-4">
-            <v-text-field
-              v-model="useFooter().line"
-              width="300"
-              label="页脚签名"
-              :hide-details="true"
-            ></v-text-field>
-          </div>
+
+          <template v-if="useFooter().value">
+            <div class="ml-4">
+              <v-file-input
+                v-on:update:model-value="handleUpdateImage"
+                accept="image/*"
+                width="300"
+                label="页脚图片"
+                :hide-details="true"
+              ></v-file-input>
+            </div>
+
+            <div class="ml-4">
+              <v-text-field
+                v-model="useFooter().line"
+                width="300"
+                label="页脚签名"
+                :hide-details="true"
+              ></v-text-field>
+            </div>
+          </template>
         </v-row>
       </v-card>
 
