@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onActivated, ref, watch } from 'vue'
 import VCardX from './VCardX.vue'
 import type { EventItem } from '@/types/eventItem'
-import { marked } from 'marked'
+import { markdownToHtml } from '@/utils'
+import mermaid from 'mermaid'
 
-defineProps<{
+const props = defineProps<{
   e: EventItem
 }>()
 
@@ -16,6 +17,28 @@ const textMapper = ref(
     ['ok', 'check'],
   ]),
 )
+
+const markedBody = ref('')
+
+watch(props.e, (nv) => (markedBody.value = markdownToHtml(nv.body)), {
+  immediate: true,
+})
+
+async function renderMermaid() {
+  await new Promise((res) => setTimeout(res))
+  mermaid.run()
+  await new Promise((res) => setTimeout(res, 200))
+  for (const m of document.querySelectorAll('pre.mermaid')) {
+    const svg = m.querySelector('svg')!
+    const { width: mW, height: mH } = m.getBoundingClientRect()
+    svg.setAttribute('viewBox', `0 0 ${mW} ${mH}`)
+    const { width: gW, height: gH } = m.querySelector('svg > g')!.getBoundingClientRect()
+    svg.setAttribute('viewBox', `0 0 ${gW + 15} ${gH + 10}`)
+  }
+}
+
+onActivated(renderMermaid)
+watch(markedBody, renderMermaid)
 </script>
 
 <template>
@@ -23,7 +46,7 @@ const textMapper = ref(
     <span :class="['s', e.state, 'mr-4']">
       <v-icon :icon="'mdi-' + textMapper.get(e.state)" size="small"></v-icon>
     </span>
-    <p v-html="marked.parse(e.body) || '请输入文本'"></p>
+    <p v-html="markedBody || '请输入文本'"></p>
   </v-card-x>
 </template>
 

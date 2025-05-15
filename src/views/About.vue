@@ -9,6 +9,12 @@ const showLog = ref(true)
 const logs = [
   {
     isBreakthrough: false,
+    date: '2025-05-15',
+    v: '1.3.2',
+    description: `- 支持 Mermaid 和 KaTex 渲染`,
+  },
+  {
+    isBreakthrough: false,
     date: '2025-05-13',
     v: '1.3.1',
     description: `- 允许用户自定义页脚图片`,

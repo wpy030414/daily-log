@@ -55,3 +55,15 @@
 ::-webkit-scrollbar {
   display: none;
 }
+
+.mermaid {
+  max-width: 500px;
+
+  & * {
+    transition: none;
+  }
+}
+
+.katex-html {
+  display: none;
+}

@@ -180,12 +180,13 @@ function handleUpdateImage(file: File | File[]) {
                 <v-select
                   v-model="p.exception"
                   :items="[
-                    { label: '无', value: undefined },
                     { label: '失败/放弃', value: 'failed' },
                     { label: '搁置/卡住/暂停', value: 'stucked' },
                   ]"
                   item-title="label"
                   item-value="value"
+                  clearable
+                  placeholder="无"
                   single-line
                   :hide-details="true"
                 ></v-select>

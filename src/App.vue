@@ -27,7 +27,7 @@ window.msg = useMessage()
 
       <v-bottom-navigation
         v-model="$route.path"
-        v-on:update:model-value="(v) => $router.push(v)"
+        v-on:update:model-value="(v: string) => $router.push(v)"
         :bg-color="useCustomTheme().now('bg-main')"
         :color="useCustomTheme().now('t-main')"
         mode="shift"

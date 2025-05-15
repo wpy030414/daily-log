@@ -1,6 +1,9 @@
 import { useMessage } from '@/stores/messages'
 import { useWidthRate } from '@/stores/width-rate'
 import html2canvas from 'html2canvas'
+import markdownit from 'markdown-it'
+import markdownItTextualUml from 'markdown-it-textual-uml'
+import markdownItKatex from '@iktakahiro/markdown-it-katex'
 
 export function downloadInBrowser(href: string, filename: string) {
   const link = document.createElement('a')
@@ -97,4 +100,8 @@ export function shotElement(cssPath: string, method: 'download' | 'copy' = 'down
         break
     }
   })
+}
+
+export function markdownToHtml(str: string) {
+  return markdownit().use(markdownItTextualUml).use(markdownItKatex).render(str)
 }
