@@ -4,7 +4,7 @@ import { computed, ref, watch } from 'vue'
 export const useCustomTheme = defineStore(
   'custom-themes',
   () => {
-    const defaultValue = '烈焰红'
+    const defaultValue = '远空蓝'
     const value = ref(defaultValue)
 
     const options = new Map([

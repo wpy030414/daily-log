@@ -5,7 +5,14 @@ import { useProject } from '@/stores/projects'
 import { useCustomTheme } from '@/stores/custom-theme'
 import { downloadInBrowser, uploadInBrowser } from '@/utils'
 import { useWidthRate } from '@/stores/width-rate'
-import { useFooter } from '@/stores/footer'
+import {
+  mdiDeleteOutline,
+  mdiExport,
+  mdiImport,
+  mdiMenuDownOutline,
+  mdiMenuUpOutline,
+  mdiPlus,
+} from '@mdi/js'
 
 function handleAdd(objType: 'p' | 'e') {
   if (objType === 'p') {
@@ -77,7 +84,7 @@ function handleOutputOption() {
           events: useEvent().value,
         }),
       ),
-    `日志快照-${Date.now()}.json`,
+    `工作日报快照-${Date.now()}.json`,
   )
 }
 
@@ -91,76 +98,15 @@ async function handleInputOption() {
     useMessage().info('您取消了操作。')
   }
 }
-
-function handleUpdateImage(file: File | File[]) {
-  if (!file) return
-
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    useFooter().img = (e.target as FileReader).result
-  }
-  reader.readAsDataURL(file as Blob)
-}
 </script>
 
 <template>
   <div class="px-10 py-10">
     <template v-if="useWidthRate().value > 0.9">
       <v-card class="px-4 py-4 mb-4">
-        <v-card-title>外观</v-card-title>
-        <v-row class="mx-4 mt-2 mb-4">
-          <div class="d-flex flex-column justify-center">
-            <v-btn-toggle
-              v-model="useCustomTheme().value"
-              :color="useCustomTheme().now('bg-main-reverse')"
-              mandatory
-              divided
-              variant="outlined"
-            >
-              <v-btn v-for="o of useCustomTheme().options" :value="o">
-                {{ o }}
-              </v-btn>
-            </v-btn-toggle>
-          </div>
-
-          <v-divider class="mx-4" :vertical="true"></v-divider>
-
-          <div>
-            <v-switch
-              v-model="useFooter().value"
-              label="启用页脚"
-              :color="useCustomTheme().now('bg-main-reverse')"
-              :hide-details="true"
-            ></v-switch>
-          </div>
-
-          <template v-if="useFooter().value">
-            <div class="ml-4">
-              <v-file-input
-                v-on:update:model-value="handleUpdateImage"
-                accept="image/*"
-                width="300"
-                label="页脚图片"
-                :hide-details="true"
-              ></v-file-input>
-            </div>
-
-            <div class="ml-4">
-              <v-text-field
-                v-model="useFooter().line"
-                width="300"
-                label="页脚签名"
-                :hide-details="true"
-              ></v-text-field>
-            </div>
-          </template>
-        </v-row>
-      </v-card>
-
-      <v-card class="px-4 py-4 mb-4">
         <v-card-title>
           项目
-          <v-btn class="ml-3" @click="handleAdd('p')"><v-icon icon="mdi-plus"></v-icon></v-btn>
+          <v-btn class="ml-3" @click="handleAdd('p')"><v-icon :icon="mdiPlus"></v-icon></v-btn>
         </v-card-title>
 
         <v-table height="45vh" fixed-header>
@@ -170,7 +116,7 @@ function handleUpdateImage(file: File | File[]) {
               <th class="text-left" width="300">所属组织</th>
               <th class="text-left">项目名</th>
               <th class="text-left" width="300">进度</th>
-              <th class="text-left" width="300">剩余日</th>
+              <th class="text-left" width="300">推进</th>
               <th class="text-right" width="300">操作</th>
             </tr>
           </thead>
@@ -200,39 +146,35 @@ function handleUpdateImage(file: File | File[]) {
               <td>
                 <v-slider
                   v-model="p.progress"
-                  :max="1"
+                  :max="100"
                   :min="0"
                   :step="0.01"
                   thumb-label
                   :hide-details="true"
                 >
                   <template v-slot:thumb-label="{ modelValue }">
-                    {{ (modelValue * 100).toFixed(0) + '%' }}
+                    {{ modelValue.toFixed(0) }}%
                   </template>
                 </v-slider>
               </td>
               <td>
-                <v-number-input
-                  v-model="p.remaining"
-                  control-variant="split"
-                  :hide-details="true"
-                ></v-number-input>
+                <v-switch v-model="p.makeProgress" :hide-details="true"> </v-switch>
               </td>
               <td class="text-right">
                 <v-btn
-                  icon="mdi-menu-up-outline"
+                  :icon="mdiMenuUpOutline"
                   size="small"
                   class="mr-3"
                   @click="handleMoveUp('p', i)"
                 ></v-btn>
                 <v-btn
-                  icon="mdi-menu-down-outline"
+                  :icon="mdiMenuDownOutline"
                   size="small"
                   class="mr-3"
                   @click="handleMoveDown('p', i)"
                 ></v-btn>
                 <v-btn
-                  icon="mdi-delete-outline"
+                  :icon="mdiDeleteOutline"
                   size="small"
                   color="red"
                   @click="handleDelete('p', i)"
@@ -246,7 +188,7 @@ function handleUpdateImage(file: File | File[]) {
       <v-card class="px-4 py-4 mb-4">
         <v-card-title>
           事件
-          <v-btn class="ml-3" @click="handleAdd('e')"><v-icon icon="mdi-plus"></v-icon></v-btn>
+          <v-btn class="ml-3" @click="handleAdd('e')"><v-icon :icon="mdiPlus"></v-icon></v-btn>
         </v-card-title>
 
         <v-table height="45vh" fixed-header>
@@ -263,9 +205,8 @@ function handleUpdateImage(file: File | File[]) {
                 <v-select
                   v-model="e.state"
                   :items="[
-                    { label: '紧急', value: 'worried' },
-                    { label: '不太紧急', value: 'non-worried' },
-                    { label: '有疑惑', value: 'confused' },
+                    { label: '推进', value: 'on' },
+                    { label: '阻塞', value: 'blocked' },
                     { label: '完成', value: 'ok' },
                   ]"
                   item-title="label"
@@ -279,19 +220,19 @@ function handleUpdateImage(file: File | File[]) {
               </td>
               <td class="text-right">
                 <v-btn
-                  icon="mdi-menu-up-outline"
+                  :icon="mdiMenuUpOutline"
                   size="small"
                   class="mr-3"
                   @click="handleMoveUp('e', i)"
                 ></v-btn>
                 <v-btn
-                  icon="mdi-menu-down-outline"
+                  :icon="mdiMenuDownOutline"
                   size="small"
                   class="mr-3"
                   @click="handleMoveDown('e', i)"
                 ></v-btn>
                 <v-btn
-                  icon="mdi-delete-outline"
+                  :icon="mdiDeleteOutline"
                   size="small"
                   color="red"
                   @click="handleDelete('e', i)"
@@ -304,10 +245,10 @@ function handleUpdateImage(file: File | File[]) {
 
       <div class="mb-4">
         <v-btn title="导出数据" class="mr-4" @click="handleOutputOption">
-          <v-icon icon="mdi-export"></v-icon>
+          <v-icon :icon="mdiExport"></v-icon>
         </v-btn>
         <v-btn title="导入数据" @click="handleInputOption"
-          ><v-icon icon="mdi-import"></v-icon
+          ><v-icon :icon="mdiImport"></v-icon
         ></v-btn>
       </div>
     </template>

@@ -3,6 +3,7 @@ import { useCustomTheme } from './stores/custom-theme'
 import { useMessage } from './stores/messages'
 import type { Store } from 'pinia'
 import { useWidthRate } from './stores/width-rate'
+import { mdiCog, mdiInformationOutline, mdiTelevision } from '@mdi/js'
 
 useWidthRate().init()
 
@@ -34,19 +35,19 @@ window.msg = useMessage()
         mandatory="force"
       >
         <v-btn value="/render">
-          <v-icon icon="mdi-television"></v-icon>
+          <v-icon :icon="mdiTelevision"></v-icon>
 
           <span>渲染</span>
         </v-btn>
 
         <v-btn value="/options">
-          <v-icon icon="mdi-cog"></v-icon>
+          <v-icon :icon="mdiCog"></v-icon>
 
           <span>配置</span>
         </v-btn>
 
         <v-btn value="/about">
-          <v-icon icon="mdi-information-outline"></v-icon>
+          <v-icon :icon="mdiInformationOutline"></v-icon>
 
           <span>关于</span>
         </v-btn>

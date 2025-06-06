@@ -1,13 +1,3 @@
-@font-face {
-  font-family: '钉钉进步体';
-  src: url('@/assets/DingTalk JinBuTi.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('@/assets/JetBrainsMono[wght].ttf') format('truetype');
-}
-
 :root {
   --color-bg-main: hsl(var(--h), 80%, 98%);
   --color-bg-sub: hsla(var(--h), 80%, 70%, 0.168);
@@ -46,22 +36,10 @@
   margin: 0;
   padding: 0;
   user-select: none;
-
-  &#preview {
-    font-family: '钉钉进步体';
-  }
 }
 
 ::-webkit-scrollbar {
   display: none;
-}
-
-.mermaid {
-  max-width: 500px;
-
-  & * {
-    transition: none;
-  }
 }
 
 .katex-html {

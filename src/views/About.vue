@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { useCustomTheme } from '@/stores/custom-theme'
 import { useMessage } from '@/stores/messages'
+import { mdiEmail, mdiGithub, mdiMenu } from '@mdi/js'
 import { marked } from 'marked'
 import { ref, watch } from 'vue'
 
 const showLog = ref(true)
 
 const logs = [
+  {
+    isBreakthrough: true,
+    date: '2025-06-06',
+    v: '1.4.0',
+    description: `- 带来全新 macOS 风格输出`,
+  },
   {
     isBreakthrough: false,
     date: '2025-05-15',
@@ -23,7 +30,7 @@ const logs = [
     isBreakthrough: true,
     date: '2025-05-09',
     v: '1.3.0',
-    description: `- 日志增加自定义页脚，“项目”新增“剩余日”维度`,
+    description: `- 日报增加自定义页脚，“项目”新增“剩余日”维度`,
   },
   {
     isBreakthrough: false,
@@ -77,7 +84,7 @@ const logs = [
     isBreakthrough: false,
     date: '2025-04-07',
     v: '1.0.5',
-    description: `- 允许用户导出日志为 JSON、导入 JSON 日志`,
+    description: `- 允许用户导出日报为 JSON、导入 JSON 日报`,
   },
   {
     isBreakthrough: false,
@@ -89,19 +96,19 @@ const logs = [
     isBreakthrough: false,
     date: '2025-04-01',
     v: '1.0.3',
-    description: `- 支持直接在应用内编辑日志`,
+    description: `- 支持直接在应用内编辑日报`,
   },
   {
     isBreakthrough: false,
     date: '2025-03-28',
     v: '1.0.2',
-    description: `- 支持将日志图片复制到剪切板`,
+    description: `- 支持将日报图片复制到剪切板`,
   },
   {
     isBreakthrough: false,
     date: '2025-03-28',
     v: '1.0.1',
-    description: `- 支持保存日志为图片`,
+    description: `- 支持保存日报为图片`,
   },
   {
     isBreakthrough: true,
@@ -119,7 +126,7 @@ const logs = [
     isBreakthrough: true,
     date: '2025-03-05',
     v: 'INDEV-0.0.0',
-    description: `- 首次带来工作日志美化器，欢迎体验！`,
+    description: `- 首次带来工作日报美化器，欢迎体验！`,
   },
 ]
 
@@ -220,10 +227,10 @@ function findMyCat() {
 
   <div class="px-10 py-10">
     <v-card class="mb-4">
-      <v-img ref="picture" src="background.png" height="300" cover>
+      <v-img ref="picture" src="bar-background.png" height="300" cover>
         <v-toolbar color="transparent">
           <template v-slot:prepend>
-            <v-btn icon="mdi-menu" @click="showLog = !showLog"></v-btn>
+            <v-btn :icon="mdiMenu" @click="showLog = !showLog"></v-btn>
           </template>
 
           <template v-slot:append>
@@ -235,7 +242,7 @@ function findMyCat() {
       </v-img>
 
       <div class="px-4 py-4">
-        <v-card-title>工作日志美化器</v-card-title>
+        <v-card-title>工作日报</v-card-title>
         <v-card-subtitle>v{{ logs[0].v }} | {{ logs[0].date }}</v-card-subtitle>
         <v-card-text>
           <p>一个 <b>Penyo/杏仁鹿</b> 的作品。</p>
@@ -251,12 +258,12 @@ function findMyCat() {
         v-for="i of [
           {
             text: 'GitHub',
-            icon: 'mdi-github',
+            icon: mdiGithub,
             action: () => visit('https://github.com/wpy030414'),
           },
           {
             text: '电子邮件',
-            icon: 'mdi-email',
+            icon: mdiEmail,
             action: () => visit('mailto:penyoofficial@outlook.com'),
           },
         ]"

@@ -4,10 +4,10 @@ export interface EventItem {
    *
    * ---
    *
-   * 只能从离散范围内取值：worried（紧急）、non-worried（不太紧急）、confused（有疑惑）、ok（完成）。
+   * 只能从离散范围内取值：on（推进）、blocked（阻塞）、ok（完成）。
    */
 
-  state: 'worried' | 'non-worried' | 'confused' | 'ok'
+  state: 'on' | 'blocked' | 'ok'
 
   /**
    * 事件概要

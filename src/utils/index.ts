@@ -1,9 +1,9 @@
 import { useMessage } from '@/stores/messages'
 import { useWidthRate } from '@/stores/width-rate'
-import html2canvas from 'html2canvas'
 import markdownit from 'markdown-it'
 import markdownItTextualUml from 'markdown-it-textual-uml'
 import markdownItKatex from '@iktakahiro/markdown-it-katex'
+import { toBlob } from 'html-to-image'
 
 export function downloadInBrowser(href: string, filename: string) {
   const link = document.createElement('a')
@@ -78,25 +78,20 @@ export function shotElement(cssPath: string, method: 'download' | 'copy' = 'down
     return
   }
 
-  html2canvas(document.querySelector(cssPath)!, { scale: 3 }).then(async (canvas) => {
-    const screenshotContainer = document.getElementById('screenshot-container')!
-    screenshotContainer.innerHTML = ''
-    screenshotContainer.appendChild(canvas)
+  toBlob(document.querySelector(cssPath) as HTMLElement, { pixelRatio: 3 }).then(async (blob) => {
+    if (!blob) {
+      useMessage().error('无法生成快照，请检查选择器是否正确！')
+      return
+    }
 
     switch (method) {
       case 'download':
-        downloadInBrowser(canvas.toDataURL('image/png'), `日志快照-${Date.now()}.png`)
+        downloadInBrowser(URL.createObjectURL(blob), `工作日报快照-${Date.now()}.png`)
         await new Promise((res) => setTimeout(res, 1000))
         useMessage().success('已下载到本地磁盘！')
         break
       case 'copy':
-        const blob = await new Promise<Blob | null>((resolve) =>
-          canvas.toBlob((blob) => resolve(blob), 'image/png'),
-        )
-
-        if (blob) {
-          await copyToClipboard(blob)
-        }
+        await copyToClipboard(blob)
         break
     }
   })
@@ -104,4 +99,72 @@ export function shotElement(cssPath: string, method: 'download' | 'copy' = 'down
 
 export function markdownToHtml(str: string) {
   return markdownit().use(markdownItTextualUml).use(markdownItKatex).render(str)
+}
+
+export const draggable = {
+  mounted(el, binding) {
+    if (binding.value !== false) {
+      let startX, startY, initialX, initialY
+      let isDragging = false
+
+      const dragHandle = binding.arg ? el.querySelector(binding.arg) : el
+
+      const handleMouseDown = (e) => {
+        if (e.target.tagName === 'BUTTON') return
+
+        isDragging = true
+
+        initialX = el.offsetLeft
+        initialY = el.offsetTop
+        startX = e.clientX
+        startY = e.clientY
+
+        document.addEventListener('mousemove', handleMouseMove)
+        document.addEventListener('mouseup', handleMouseUp)
+
+        el.style.cursor = 'grabbing'
+        el.style.userSelect = 'none'
+      }
+
+      const handleMouseMove = (e) => {
+        if (!isDragging) return
+
+        const dx = e.clientX - startX
+        const dy = e.clientY - startY
+
+        el.style.left = `${initialX + dx}px`
+        el.style.top = `${initialY + dy}px`
+      }
+
+      const handleMouseUp = () => {
+        isDragging = false
+
+        document.removeEventListener('mousemove', handleMouseMove)
+        document.removeEventListener('mouseup', handleMouseUp)
+
+        el.style.cursor = 'grab'
+        el.style.userSelect = ''
+      }
+
+      dragHandle.addEventListener('mousedown', handleMouseDown)
+
+      el.__draggable = {
+        destroy: () => {
+          dragHandle.removeEventListener('mousedown', handleMouseDown)
+          document.removeEventListener('mousemove', handleMouseMove)
+          document.removeEventListener('mouseup', handleMouseUp)
+        },
+      }
+
+      el.style.position = 'absolute'
+      el.style.cursor = 'grab'
+    }
+  },
+
+  unmounted(el) {
+    if (el.__draggable) {
+      el.__draggable.destroy()
+      delete el.__draggable
+    }
+  },
 }

@@ -23,7 +23,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  document.title = `${to.name?.toString() || '不存在的页面'} | 工作日志美化器`
+  document.title = `${to.name?.toString() || '不存在的页面'} | 工作日报`
 })
 
 export default router

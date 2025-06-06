@@ -25,12 +25,16 @@ export interface ProjectItem {
    *
    * ---
    *
-   * 只能从连续范围内取值：[0, 1]，超出则自动修正为距离最近的上下界。
+   * 只能从连续范围内取值：[0, 100]。
    */
   progress: number
 
   /**
-   * 剩余日
+   * 推进
+   *
+   * ---
+   *
+   * 当今日在此项目上付出时，值为真。
    */
-  remaining?: number
+  makeProgress?: boolean
 }
