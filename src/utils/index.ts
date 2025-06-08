@@ -73,10 +73,10 @@ export async function copyToClipboard(data: string | Blob) {
 }
 
 export function shotElement(cssPath: string, method: 'download' | 'copy' = 'download') {
-  if (useWidthRate().value > 0.33) {
-    useMessage().warning('请您先最窄化窗口再操作！')
-    return
-  }
+  // if (useWidthRate().value > 0.33) {
+  //   useMessage().warning('请您先最窄化窗口再操作！')
+  //   return
+  // }
 
   toBlob(document.querySelector(cssPath) as HTMLElement, { pixelRatio: 3 }).then(async (blob) => {
     if (!blob) {
@@ -102,14 +102,23 @@ export function markdownToHtml(str: string) {
 }
 
 export const draggable = {
-  mounted(el, binding) {
+  mounted(
+    el: {
+      querySelector: (arg0: any) => any
+      offsetLeft: any
+      offsetTop: any
+      style: { cursor: string; userSelect: string; left: string; top: string; position: string }
+      __draggable?: { destroy: () => void }
+    },
+    binding: { value: boolean; arg: any },
+  ) {
     if (binding.value !== false) {
-      let startX, startY, initialX, initialY
+      let startX: number, startY: number, initialX: number, initialY: number
       let isDragging = false
 
       const dragHandle = binding.arg ? el.querySelector(binding.arg) : el
 
-      const handleMouseDown = (e) => {
+      const handleMouseDown = (e: { target: { tagName: string }; clientX: any; clientY: any }) => {
         if (e.target.tagName === 'BUTTON') return
 
         isDragging = true
@@ -126,7 +135,7 @@ export const draggable = {
         el.style.userSelect = 'none'
       }
 
-      const handleMouseMove = (e) => {
+      const handleMouseMove = (e: { clientX: number; clientY: number }) => {
         if (!isDragging) return
 
         const dx = e.clientX - startX
@@ -161,7 +170,7 @@ export const draggable = {
     }
   },
 
-  unmounted(el) {
+  unmounted(el: { __draggable?: { destroy: () => void } }) {
     if (el.__draggable) {
       el.__draggable.destroy()
       delete el.__draggable

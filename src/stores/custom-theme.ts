@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
+import { en } from 'vuetify/locale'
 
 export const useCustomTheme = defineStore(
   'custom-themes',
@@ -40,7 +41,11 @@ export const useCustomTheme = defineStore(
       ) => window.getComputedStyle(document.documentElement).getPropertyValue(`--color-${type}`)
     })
 
-    return { value, options: Array.from(options.keys()), now }
+    const enableBackgroundImage = ref(true)
+
+    const bgi = ref()
+
+    return { value, options: Array.from(options.keys()), now, enableBackgroundImage, bgi }
   },
   {
     persist: true,

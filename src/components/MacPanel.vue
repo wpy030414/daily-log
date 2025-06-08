@@ -1,25 +1,15 @@
 <script setup lang="ts">
-import { useMessage } from '@/stores/messages'
 import type { EventItem } from '@/types/eventItem'
 import type { ProjectItem } from '@/types/projectItem'
 import { markdownToHtml } from '@/utils'
 import { mdiChevronTripleRight } from '@mdi/js'
 import { computed } from 'vue'
 
-withDefaults(
-  defineProps<{
-    actions?: ((() => void) | undefined)[]
-    projects: ProjectItem[]
-    events: EventItem[]
-  }>(),
-  {
-    actions: () => [
-      () => useMessage().info('功能待实现'),
-      () => useMessage().info('功能待实现'),
-      () => useMessage().info('功能待实现'),
-    ],
-  },
-)
+defineProps<{
+  actions: ((() => void) | undefined)[]
+  projects: ProjectItem[]
+  events: EventItem[]
+}>()
 </script>
 
 <template>
@@ -57,6 +47,8 @@ withDefaults(
             <p class="text-grey">{{ i.progress.toFixed(0) }}%</p>
           </template>
         </v-card>
+
+        <v-empty-state v-if="projects.length === 0" text="暂时没有项目"></v-empty-state>
       </v-card>
 
       <v-card class="section px-2 py-2" variant="outlined" rounded="lg">
@@ -80,6 +72,8 @@ withDefaults(
             </v-chip>
           </template>
         </v-card>
+
+        <v-empty-state v-if="events.length === 0" text="暂时没有事件"></v-empty-state>
       </v-card>
     </v-list-item>
   </v-card>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MacPanel from '@/components/MacPanel.vue'
+import { useCustomTheme } from '@/stores/custom-theme'
 import { useEvent } from '@/stores/events'
 import { useProject } from '@/stores/projects'
 import { shotElement } from '@/utils'
@@ -17,7 +18,15 @@ async function switchDraggable() {
 </script>
 
 <template>
-  <div id="preview" class="enable-background">
+  <div
+    id="preview"
+    :class="[useCustomTheme().enableBackgroundImage ? 'enable-background' : '']"
+    :style="[
+      useCustomTheme().enableBackgroundImage && useCustomTheme().bgi
+        ? `background-image: url(${useCustomTheme().bgi})`
+        : '',
+    ]"
+  >
     <p class="border"></p>
     <mac-panel
       v-if="showPanel"
