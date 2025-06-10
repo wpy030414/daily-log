@@ -11,14 +11,14 @@ export interface ProjectItem {
   exception?: 'failed' | 'stucked'
 
   /**
-   * 所属组织
-   */
-  org: string
-
-  /**
    * 项目名
    */
   project: string
+
+  /**
+   * 所属组织
+   */
+  org: string
 
   /**
    * 进度

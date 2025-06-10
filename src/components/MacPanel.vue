@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useCustomTheme } from '@/stores/custom-theme'
 import type { EventItem } from '@/types/eventItem'
 import type { ProjectItem } from '@/types/projectItem'
 import { markdownToHtml } from '@/utils'
@@ -13,7 +14,11 @@ defineProps<{
 </script>
 
 <template>
-  <v-card class="shell mx-12 my-12" elevation="24">
+  <v-card
+    class="shell mx-12 my-12"
+    elevation="24"
+    :enable-glassmorphism="useCustomTheme().enableGlassmorphism"
+  >
     <v-list-item class="px-6" height="72">
       <template v-slot:prepend>
         <v-btn icon flat color="#FD5F56" size="16" class="mr-2" @click="actions[0]"></v-btn>
@@ -27,51 +32,71 @@ defineProps<{
     </v-list-item>
 
     <v-list-item class="px-6 pb-6">
-      <v-card class="section px-2 py-2 mb-4" variant="outlined" rounded="lg">
-        <v-card v-for="i of projects" variant="flat">
-          <template v-slot:title>
-            <h5>{{ i.project }}</h5>
-          </template>
+      <v-card class="section px-2 mb-4" variant="outlined" rounded="lg">
+        <template v-for="(i, index) of projects">
+          <v-card class="my-1" variant="flat">
+            <template v-slot:title>
+              <v-badge
+                dot
+                :color="
+                  new Map([
+                    ['default', 'transparent'],
+                    ['failed', 'red'],
+                    ['stucked', 'orange'],
+                  ]).get(i.exception || 'default')
+                "
+                offset-x="-12"
+              >
+                <h5>{{ i.project }}</h5>
+              </v-badge>
+            </template>
 
-          <template v-slot:subtitle>
-            <p>{{ i.org }}</p>
-          </template>
+            <template v-slot:subtitle>
+              <p>{{ i.org }}</p>
+            </template>
 
-          <template v-slot:append>
-            <v-icon
-              class="mr-1"
-              :color="i.makeProgress ? '#FD5F56' : 'transparent'"
-              :icon="mdiChevronTripleRight"
-            ></v-icon>
+            <template v-slot:append>
+              <v-icon
+                class="mr-1"
+                :color="i.makeProgress ? '#FD5F56' : 'transparent'"
+                :icon="mdiChevronTripleRight"
+              ></v-icon>
 
-            <p class="text-grey">{{ i.progress.toFixed(0) }}%</p>
-          </template>
-        </v-card>
+              <p class="text-grey">{{ i.progress.toFixed(0) }}%</p>
+            </template>
+          </v-card>
+
+          <v-divider v-if="index + 1 < projects.length"></v-divider>
+        </template>
 
         <v-empty-state v-if="projects.length === 0" text="暂时没有项目"></v-empty-state>
       </v-card>
 
-      <v-card class="section px-2 py-2" variant="outlined" rounded="lg">
-        <v-card v-for="i of events" variant="flat">
-          <template v-slot:title>
-            <div
-              v-html="computed(() => markdownToHtml(i.body)).value"
-              style="font-size: 14px; opacity: 0.8; white-space: normal"
-            ></div>
-          </template>
+      <v-card class="section px-2" variant="outlined" rounded="lg">
+        <template v-for="(i, index) of events">
+          <v-card class="my-2" variant="flat">
+            <template v-slot:title>
+              <div
+                v-html="computed(() => markdownToHtml(i.body)).value"
+                style="font-size: 14px; opacity: 0.8; white-space: normal"
+              ></div>
+            </template>
 
-          <template v-slot:append>
-            <v-chip>
-              {{
-                [
-                  { label: '推进', value: 'on' },
-                  { label: '阻塞', value: 'blocked' },
-                  { label: '完成', value: 'ok' },
-                ].find((s) => s.value === i.state)?.label || '？'
-              }}
-            </v-chip>
-          </template>
-        </v-card>
+            <template v-slot:append>
+              <v-chip>
+                {{
+                  [
+                    { label: '推进', value: 'on' },
+                    { label: '阻塞', value: 'blocked' },
+                    { label: '完成', value: 'ok' },
+                  ].find((s) => s.value === i.state)?.label || '？'
+                }}
+              </v-chip>
+            </template>
+          </v-card>
+
+          <v-divider v-if="index + 1 < events.length"></v-divider>
+        </template>
 
         <v-empty-state v-if="events.length === 0" text="暂时没有事件"></v-empty-state>
       </v-card>
@@ -82,8 +107,11 @@ defineProps<{
 <style scoped>
 .shell {
   border-radius: 12px;
-  background: #ffffffaa;
-  backdrop-filter: blur(24px);
+
+  &[enable-glassmorphism='true'] {
+    background: #ffffffaa;
+    backdrop-filter: blur(24px);
+  }
 
   & .section {
     border-color: #00000022;

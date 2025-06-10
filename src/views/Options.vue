@@ -4,11 +4,9 @@ import { useMessage } from '@/stores/messages'
 import { useProject } from '@/stores/projects'
 import { useCustomTheme } from '@/stores/custom-theme'
 import { downloadInBrowser, uploadInBrowser } from '@/utils'
-import { useWidthRate } from '@/stores/width-rate'
 import {
   mdiDeleteOutline,
   mdiExport,
-  mdiFile,
   mdiImport,
   mdiMenuDownOutline,
   mdiMenuUpOutline,
@@ -116,10 +114,17 @@ function handleUpdateImage(file: File | File[]) {
     <!-- <template v-if="useWidthRate().value > 0.9"> -->
     <v-card class="px-4 py-4 mb-4">
       <v-card-title>外观</v-card-title>
+
       <v-row class="mx-4 mt-2 mb-4">
         <v-switch
+          v-model="useCustomTheme().enableGlassmorphism"
+          class="mr-10"
+          label="启用毛玻璃效果"
+          hide-details
+        ></v-switch>
+
+        <v-switch
           v-model="useCustomTheme().enableBackgroundImage"
-          accept="image/*"
           label="启用背景图片"
           hide-details
         ></v-switch>
@@ -138,20 +143,27 @@ function handleUpdateImage(file: File | File[]) {
     <v-card class="px-4 py-4 mb-4">
       <v-card-title>
         项目
-        <v-btn class="ml-3" @click="handleAdd('p')"><v-icon :icon="mdiPlus"></v-icon></v-btn>
+
+        <v-btn class="ml-3" :icon="mdiPlus" @click="handleAdd('p')"></v-btn>
       </v-card-title>
 
       <v-table height="45vh" fixed-header>
         <thead>
           <tr>
             <th class="text-left" width="200">异常</th>
+
             <th class="text-left" width="200">项目名</th>
+
             <th class="text-left">所属组织</th>
+
             <th class="text-left" width="150">进度</th>
+
             <th class="text-left" width="100">推进</th>
+
             <th class="text-right" width="200">操作</th>
           </tr>
         </thead>
+
         <tbody>
           <tr v-for="(p, i) of useProject().value">
             <td class="py-5">
@@ -163,18 +175,21 @@ function handleUpdateImage(file: File | File[]) {
                 ]"
                 item-title="label"
                 item-value="value"
-                clearable
+                :clearable="true"
                 placeholder="无"
                 single-line
                 hide-details
               ></v-select>
             </td>
+
             <td>
               <v-text-field v-model="p.project" hide-details></v-text-field>
             </td>
+
             <td>
               <v-text-field v-model="p.org" hide-details></v-text-field>
             </td>
+
             <td>
               <v-slider
                 v-model="p.progress"
@@ -189,9 +204,11 @@ function handleUpdateImage(file: File | File[]) {
                 </template>
               </v-slider>
             </td>
+
             <td>
               <v-switch v-model="p.makeProgress" hide-details> </v-switch>
             </td>
+
             <td class="text-right">
               <v-btn
                 :icon="mdiMenuUpOutline"
@@ -199,12 +216,14 @@ function handleUpdateImage(file: File | File[]) {
                 class="mr-3"
                 @click="handleMoveUp('p', i)"
               ></v-btn>
+
               <v-btn
                 :icon="mdiMenuDownOutline"
                 size="small"
                 class="mr-3"
                 @click="handleMoveDown('p', i)"
               ></v-btn>
+
               <v-btn
                 :icon="mdiDeleteOutline"
                 size="small"
@@ -220,17 +239,21 @@ function handleUpdateImage(file: File | File[]) {
     <v-card class="px-4 py-4 mb-4">
       <v-card-title>
         事件
-        <v-btn class="ml-3" @click="handleAdd('e')"><v-icon :icon="mdiPlus"></v-icon></v-btn>
+
+        <v-btn class="ml-3" :icon="mdiPlus" @click="handleAdd('e')"></v-btn>
       </v-card-title>
 
       <v-table height="45vh" fixed-header>
         <thead>
           <tr>
             <th class="text-left" width="200">状态</th>
+
             <th class="text-left">事件概要</th>
+
             <th class="text-right" width="200">操作</th>
           </tr>
         </thead>
+
         <tbody>
           <tr v-for="(e, i) of useEvent().value">
             <td class="py-5">
@@ -247,9 +270,11 @@ function handleUpdateImage(file: File | File[]) {
                 hide-details
               ></v-select>
             </td>
+
             <td>
               <v-textarea v-model="e.body" auto-grow hide-details></v-textarea>
             </td>
+
             <td class="text-right">
               <v-btn
                 :icon="mdiMenuUpOutline"
@@ -257,12 +282,14 @@ function handleUpdateImage(file: File | File[]) {
                 class="mr-3"
                 @click="handleMoveUp('e', i)"
               ></v-btn>
+
               <v-btn
                 :icon="mdiMenuDownOutline"
                 size="small"
                 class="mr-3"
                 @click="handleMoveDown('e', i)"
               ></v-btn>
+
               <v-btn
                 :icon="mdiDeleteOutline"
                 size="small"
@@ -276,10 +303,9 @@ function handleUpdateImage(file: File | File[]) {
     </v-card>
 
     <div class="mb-4">
-      <v-btn title="导出数据" class="mr-4" @click="handleOutputOption">
-        <v-icon :icon="mdiExport"></v-icon>
-      </v-btn>
-      <v-btn title="导入数据" @click="handleInputOption"><v-icon :icon="mdiImport"></v-icon></v-btn>
+      <v-btn title="导出数据" class="mr-4" :icon="mdiExport" @click="handleOutputOption"></v-btn>
+
+      <v-btn title="导入数据" :icon="mdiImport" @click="handleInputOption"></v-btn>
     </div>
     <!-- </template> -->
     <!-- <template v-else>请您先全屏化窗口再操作！</template> -->

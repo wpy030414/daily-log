@@ -20,7 +20,7 @@ async function switchDraggable() {
 <template>
   <div
     id="preview"
-    :class="[useCustomTheme().enableBackgroundImage ? 'enable-background' : '']"
+    :enable-background="useCustomTheme().enableBackgroundImage"
     :style="[
       useCustomTheme().enableBackgroundImage && useCustomTheme().bgi
         ? `background-image: url(${useCustomTheme().bgi})`
@@ -28,6 +28,7 @@ async function switchDraggable() {
     ]"
   >
     <p class="border"></p>
+
     <mac-panel
       v-if="showPanel"
       v-draggable="draggable"
@@ -39,6 +40,7 @@ async function switchDraggable() {
       :projects="useProject().value"
       :events="useEvent().value"
     ></mac-panel>
+
     <p class="border"></p>
   </div>
 </template>
@@ -47,7 +49,7 @@ async function switchDraggable() {
 #preview {
   background: white;
 
-  &.enable-background {
+  &[enable-background='true'] {
     background: url('panel-background.jpg') no-repeat center center;
     background-size: cover;
   }

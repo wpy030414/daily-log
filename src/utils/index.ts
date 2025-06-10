@@ -1,5 +1,5 @@
 import { useMessage } from '@/stores/messages'
-import { useWidthRate } from '@/stores/width-rate'
+// import { useWidthRate } from '@/stores/width-rate'
 import markdownit from 'markdown-it'
 import markdownItTextualUml from 'markdown-it-textual-uml'
 import markdownItKatex from '@iktakahiro/markdown-it-katex'
@@ -11,6 +11,7 @@ export function downloadInBrowser(href: string, filename: string) {
   link.download = filename
   link.click()
   link.remove()
+  useMessage().success('已下载到本地磁盘！')
 }
 
 export function uploadInBrowser(isJSON: boolean = true) {
@@ -84,11 +85,11 @@ export function shotElement(cssPath: string, method: 'download' | 'copy' = 'down
       return
     }
 
+    await new Promise((res) => setTimeout(res, 1000))
+
     switch (method) {
       case 'download':
         downloadInBrowser(URL.createObjectURL(blob), `工作日报快照-${Date.now()}.png`)
-        await new Promise((res) => setTimeout(res, 1000))
-        useMessage().success('已下载到本地磁盘！')
         break
       case 'copy':
         await copyToClipboard(blob)

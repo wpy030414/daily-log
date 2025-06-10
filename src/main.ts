@@ -9,7 +9,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { pl, zhHans } from 'vuetify/locale'
-import { mdi } from 'vuetify/iconsets/mdi-svg'
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 
 import App from './App.vue'
 import router from './router'
@@ -34,6 +34,7 @@ const vuetify = createVuetify({
     messages: { zhHans, pl },
   },
   icons: {
+    aliases,
     sets: {
       mdi,
     },

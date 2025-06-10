@@ -97,6 +97,7 @@ function findMyCat() {
 
         <div>
           <strong>{{ log.v }}</strong>
+
           <div class="text-caption" v-html="marked.parse(log.description)"></div>
         </div>
       </v-timeline-item>
@@ -121,9 +122,12 @@ function findMyCat() {
 
       <div class="px-4 py-4">
         <v-card-title>工作日报</v-card-title>
+
         <v-card-subtitle>v{{ logs[0].v }} | {{ logs[0].date }}</v-card-subtitle>
+
         <v-card-text>
           <p>一个 <b>Penyo/杏仁鹿</b> 的作品。</p>
+
           <p><i>“这个世界，果然还是没有形式主义更好呢~“</i></p>
         </v-card-text>
       </div>
@@ -193,9 +197,9 @@ function findMyCat() {
         <template v-slot:actions>
           <v-spacer></v-spacer>
 
-          <v-btn @click="showMysteriousDialog = false"> 先容我想想 </v-btn>
+          <v-btn @click="showMysteriousDialog = false">先容我想想</v-btn>
 
-          <v-btn type="submit"> 验证 </v-btn>
+          <v-btn type="submit">验证</v-btn>
         </template>
       </v-card>
     </v-form>

@@ -1,6 +1,12 @@
 export const logs = [
   {
     isBreakthrough: false,
+    date: '2025-06-10',
+    v: '1.4.2',
+    description: `- 改变项目异常的体现`,
+  },
+  {
+    isBreakthrough: false,
     date: '2025-06-07',
     v: '1.4.1',
     description: `- 允许替换背景图片`,
