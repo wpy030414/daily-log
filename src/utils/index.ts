@@ -73,29 +73,29 @@ export async function copyToClipboard(data: string | Blob) {
   }
 }
 
-export function shotElement(cssPath: string, method: 'download' | 'copy' = 'download') {
+export async function shotElement(cssPath: string, method: 'download' | 'copy' = 'download') {
   // if (useWidthRate().value > 0.33) {
   //   useMessage().warning('请您先最窄化窗口再操作！')
   //   return
   // }
 
-  toBlob(document.querySelector(cssPath) as HTMLElement, { pixelRatio: 3 }).then(async (blob) => {
-    if (!blob) {
-      useMessage().error('无法生成快照，请检查选择器是否正确！')
-      return
-    }
+  await new Promise((res) => setTimeout(res, 1000))
 
-    await new Promise((res) => setTimeout(res, 1000))
+  const blob = await toBlob(document.querySelector(cssPath) as HTMLElement, { pixelRatio: 3 })
 
-    switch (method) {
-      case 'download':
-        downloadInBrowser(URL.createObjectURL(blob), `工作日报快照-${Date.now()}.png`)
-        break
-      case 'copy':
-        await copyToClipboard(blob)
-        break
-    }
-  })
+  if (!blob) {
+    useMessage().error('无法生成快照，请检查选择器是否正确！')
+    return
+  }
+
+  switch (method) {
+    case 'download':
+      downloadInBrowser(URL.createObjectURL(blob), `工作日报快照-${Date.now()}.png`)
+      break
+    case 'copy':
+      copyToClipboard(blob)
+      break
+  }
 }
 
 export function markdownToHtml(str: string) {
