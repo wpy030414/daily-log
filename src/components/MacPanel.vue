@@ -122,6 +122,16 @@ defineProps<{
   }
 }
 
+.v-theme--dark .shell {
+  &[enable-glassmorphism='true'] {
+    background: #000000aa;
+  }
+
+  & .section {
+    border-color: #ffffff22;
+  }
+}
+
 h4,
 h5 {
   font-weight: normal;

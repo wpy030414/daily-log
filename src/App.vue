@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { useCustomTheme } from './stores/custom-theme'
 import { useMessage } from './stores/messages'
 import type { Store } from 'pinia'
 import { useWidthRate } from './stores/width-rate'
 import { mdiCog, mdiInformationOutline, mdiTelevision } from '@mdi/js'
+import { useCustomTheme } from './stores/custom-theme'
+import { useTheme } from 'vuetify'
 
 useWidthRate().init()
+useCustomTheme().inject(useTheme())
 
 declare global {
   interface Window {
@@ -29,8 +31,7 @@ window.msg = useMessage()
       <v-bottom-navigation
         v-model="$route.path"
         v-on:update:model-value="(v: string) => $router.push(v)"
-        :bg-color="useCustomTheme().now('bg-main')"
-        :color="useCustomTheme().now('t-main')"
+        color="primary"
         mode="shift"
         mandatory="force"
       >

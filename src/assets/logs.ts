@@ -1,6 +1,12 @@
 export const logs = [
   {
     isBreakthrough: false,
+    date: '2025-06-18',
+    v: '1.4.3',
+    description: `- 新增暗黑模式`,
+  },
+  {
+    isBreakthrough: false,
     date: '2025-06-10',
     v: '1.4.2',
     description: `- 改变项目异常的体现`,

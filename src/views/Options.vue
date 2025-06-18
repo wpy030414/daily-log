@@ -12,6 +12,7 @@ import {
   mdiMenuUpOutline,
   mdiPlus,
 } from '@mdi/js'
+import { useTheme } from 'vuetify'
 
 function handleAdd(objType: 'p' | 'e') {
   if (objType === 'p') {
@@ -111,13 +112,21 @@ function handleUpdateImage(file: File | File[]) {
 
 <template>
   <div class="px-10 py-10">
-    <!-- <template v-if="useWidthRate().value > 0.9"> -->
     <v-card class="px-4 py-4 mb-4">
       <v-card-title>外观</v-card-title>
 
       <v-row class="mx-4 mt-2 mb-4">
         <v-switch
+          v-model="useCustomTheme().isDark"
+          color="primary"
+          class="mr-10"
+          label="启用暗黑模式"
+          hide-details
+        ></v-switch>
+
+        <v-switch
           v-model="useCustomTheme().enableGlassmorphism"
+          color="primary"
           class="mr-10"
           label="启用毛玻璃效果"
           hide-details
@@ -125,6 +134,7 @@ function handleUpdateImage(file: File | File[]) {
 
         <v-switch
           v-model="useCustomTheme().enableBackgroundImage"
+          color="primary"
           label="启用背景图片"
           hide-details
         ></v-switch>
@@ -132,6 +142,7 @@ function handleUpdateImage(file: File | File[]) {
         <v-file-input
           v-if="useCustomTheme().enableBackgroundImage"
           v-on:update:model-value="handleUpdateImage"
+          color="primary"
           accept="image/*"
           max-width="300"
           label="替换背景图片"
@@ -144,7 +155,7 @@ function handleUpdateImage(file: File | File[]) {
       <v-card-title>
         项目
 
-        <v-btn class="ml-3" :icon="mdiPlus" @click="handleAdd('p')"></v-btn>
+        <v-btn color="primary" class="ml-3" :icon="mdiPlus" @click="handleAdd('p')"></v-btn>
       </v-card-title>
 
       <v-table height="45vh" fixed-header>
@@ -169,6 +180,7 @@ function handleUpdateImage(file: File | File[]) {
             <td class="py-5">
               <v-select
                 v-model="p.exception"
+                color="primary"
                 :items="[
                   { label: '失败/放弃', value: 'failed' },
                   { label: '搁置/卡住/暂停', value: 'stucked' },
@@ -183,16 +195,17 @@ function handleUpdateImage(file: File | File[]) {
             </td>
 
             <td>
-              <v-text-field v-model="p.project" hide-details></v-text-field>
+              <v-text-field v-model="p.project" color="primary" hide-details></v-text-field>
             </td>
 
             <td>
-              <v-text-field v-model="p.org" hide-details></v-text-field>
+              <v-text-field v-model="p.org" color="primary" hide-details></v-text-field>
             </td>
 
             <td>
               <v-slider
                 v-model="p.progress"
+                color="primary"
                 :max="100"
                 :min="0"
                 :step="0.01"
@@ -206,7 +219,7 @@ function handleUpdateImage(file: File | File[]) {
             </td>
 
             <td>
-              <v-switch v-model="p.makeProgress" hide-details> </v-switch>
+              <v-switch v-model="p.makeProgress" color="primary" hide-details> </v-switch>
             </td>
 
             <td class="text-right">
@@ -226,8 +239,8 @@ function handleUpdateImage(file: File | File[]) {
 
               <v-btn
                 :icon="mdiDeleteOutline"
-                size="small"
                 color="red"
+                size="small"
                 @click="handleDelete('p', i)"
               ></v-btn>
             </td>
@@ -240,7 +253,7 @@ function handleUpdateImage(file: File | File[]) {
       <v-card-title>
         事件
 
-        <v-btn class="ml-3" :icon="mdiPlus" @click="handleAdd('e')"></v-btn>
+        <v-btn color="primary" class="ml-3" :icon="mdiPlus" @click="handleAdd('e')"></v-btn>
       </v-card-title>
 
       <v-table height="45vh" fixed-header>
@@ -259,6 +272,7 @@ function handleUpdateImage(file: File | File[]) {
             <td class="py-5">
               <v-select
                 v-model="e.state"
+                color="primary"
                 :items="[
                   { label: '推进', value: 'on' },
                   { label: '阻塞', value: 'blocked' },
@@ -272,7 +286,7 @@ function handleUpdateImage(file: File | File[]) {
             </td>
 
             <td>
-              <v-textarea v-model="e.body" auto-grow hide-details></v-textarea>
+              <v-textarea v-model="e.body" color="primary" auto-grow hide-details></v-textarea>
             </td>
 
             <td class="text-right">
@@ -292,8 +306,8 @@ function handleUpdateImage(file: File | File[]) {
 
               <v-btn
                 :icon="mdiDeleteOutline"
-                size="small"
                 color="red"
+                size="small"
                 @click="handleDelete('e', i)"
               ></v-btn>
             </td>
@@ -303,12 +317,10 @@ function handleUpdateImage(file: File | File[]) {
     </v-card>
 
     <div class="mb-4">
-      <v-btn title="导出数据" class="mr-4" :icon="mdiExport" @click="handleOutputOption"></v-btn>
+      <v-btn :icon="mdiExport" class="mr-4" title="导出数据" @click="handleOutputOption"></v-btn>
 
-      <v-btn title="导入数据" :icon="mdiImport" @click="handleInputOption"></v-btn>
+      <v-btn :icon="mdiImport" color="red" title="导入数据" @click="handleInputOption"></v-btn>
     </div>
-    <!-- </template> -->
-    <!-- <template v-else>请您先全屏化窗口再操作！</template> -->
   </div>
 </template>
 

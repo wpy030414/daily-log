@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { logs } from '@/assets/logs'
-import { useCustomTheme } from '@/stores/custom-theme'
 import { useMessage } from '@/stores/messages'
-import { mdiEmail, mdiGithub, mdiMenu } from '@mdi/js'
+import { mdiCat, mdiEmail, mdiGithub, mdiMagnify, mdiMenu } from '@mdi/js'
 import { marked } from 'marked'
 import { ref, watch } from 'vue'
 
@@ -81,24 +80,18 @@ function findMyCat() {
   <v-navigation-drawer v-if="showLog" :width="500">
     <v-timeline side="end">
       <v-timeline-item
-        v-for="(log, i) of logs"
-        :dot-color="
-          !i
-            ? useCustomTheme().now('bg-main-reverse')
-            : log.isBreakthrough
-              ? useCustomTheme().now('bg-sub')
-              : useCustomTheme().now('bg-main')
-        "
+        v-for="l of logs"
+        :dot-color="l.isBreakthrough ? 'primary' : 'secondary'"
         size="small"
       >
         <template v-slot:opposite>
-          <p class="mr-4 text-grey">{{ log.date }}</p>
+          <p class="mr-4 text-grey">{{ l.date }}</p>
         </template>
 
         <div>
-          <strong>{{ log.v }}</strong>
+          <strong>{{ l.v }}</strong>
 
-          <div class="text-caption" v-html="marked.parse(log.description)"></div>
+          <div class="text-caption" v-html="marked.parse(l.description)"></div>
         </div>
       </v-timeline-item>
     </v-timeline>
@@ -168,12 +161,12 @@ function findMyCat() {
           [
             {
               text: '调戏小猫',
-              icon: 'mdi-cat',
+              icon: mdiCat,
               action: flirt,
             },
             {
               text: '寻找小猫',
-              icon: 'mdi-magnify',
+              icon: mdiMagnify,
               action: () => (showMysteriousDialog = true),
             },
           ][Number(flirtCounter.value > flirtCounter.trigger)],
@@ -194,12 +187,13 @@ function findMyCat() {
     <v-form validate-on="blur" @submit.prevent="findMyCat">
       <v-card title="据说只要输入神奇的代码就能找到丢失的猫猫？">
         <v-otp-input v-model="code" length="6"></v-otp-input>
+
         <template v-slot:actions>
           <v-spacer></v-spacer>
 
           <v-btn @click="showMysteriousDialog = false">先容我想想</v-btn>
 
-          <v-btn type="submit">验证</v-btn>
+          <v-btn color="primary" type="submit">验证</v-btn>
         </template>
       </v-card>
     </v-form>

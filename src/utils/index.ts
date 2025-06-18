@@ -1,5 +1,4 @@
 import { useMessage } from '@/stores/messages'
-// import { useWidthRate } from '@/stores/width-rate'
 import markdownit from 'markdown-it'
 import markdownItTextualUml from 'markdown-it-textual-uml'
 import markdownItKatex from '@iktakahiro/markdown-it-katex'
@@ -74,11 +73,6 @@ export async function copyToClipboard(data: string | Blob) {
 }
 
 export async function shotElement(cssPath: string, method: 'download' | 'copy' = 'download') {
-  // if (useWidthRate().value > 0.33) {
-  //   useMessage().warning('请您先最窄化窗口再操作！')
-  //   return
-  // }
-
   await new Promise((res) => setTimeout(res, 1000))
 
   const blob = await toBlob(document.querySelector(cssPath) as HTMLElement, { pixelRatio: 3 })
