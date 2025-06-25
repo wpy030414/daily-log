@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { useMessage } from './stores/messages'
 import type { Store } from 'pinia'
-import { useWidthRate } from './stores/width-rate'
 import { mdiCog, mdiInformationOutline, mdiTelevision } from '@mdi/js'
 import { useCustomTheme } from './stores/custom-theme'
 import { useTheme } from 'vuetify'
 
-useWidthRate().init()
 useCustomTheme().inject(useTheme())
 
 declare global {
@@ -33,7 +31,6 @@ window.msg = useMessage()
         v-on:update:model-value="(v: string) => $router.push(v)"
         color="primary"
         mode="shift"
-        mandatory="force"
       >
         <v-btn value="/render">
           <v-icon :icon="mdiTelevision"></v-icon>

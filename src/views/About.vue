@@ -5,7 +5,7 @@ import { mdiCat, mdiEmail, mdiGithub, mdiMagnify, mdiMenu } from '@mdi/js'
 import { marked } from 'marked'
 import { ref, watch } from 'vue'
 
-const showLog = ref(true)
+const showLog = ref(false)
 
 function visit(url: string) {
   const a = document.createElement('a')
@@ -77,7 +77,12 @@ function findMyCat() {
 </script>
 
 <template>
-  <v-navigation-drawer v-if="showLog" :width="500">
+  <v-navigation-drawer
+    v-model="showLog"
+    :location="$vuetify.display.mobile ? 'bottom' : undefined"
+    temporary
+    :width="500"
+  >
     <v-timeline side="end">
       <v-timeline-item
         v-for="l of logs"
@@ -102,11 +107,14 @@ function findMyCat() {
       <v-img ref="picture" src="bar-background.png" height="300" cover>
         <v-toolbar color="transparent">
           <template v-slot:prepend>
-            <v-btn :icon="mdiMenu" @click="showLog = !showLog"></v-btn>
+            <v-btn :icon="mdiMenu" color="black" @click="showLog = !showLog"></v-btn>
           </template>
 
           <template v-slot:append>
-            <v-btn v-if="knockCounter.value < knockCounter.trigger" @click="knockCounter.value++"
+            <v-btn
+              v-if="knockCounter.value < knockCounter.trigger"
+              color="black"
+              @click="knockCounter.value++"
               >召唤神兽</v-btn
             >
           </template>
