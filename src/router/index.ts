@@ -4,8 +4,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/',
+      redirect: '/render',
+    },
+    {
       path: '/render',
-      alias: '/',
       name: '渲染',
       component: () => import('@/views/Render.vue'),
     },

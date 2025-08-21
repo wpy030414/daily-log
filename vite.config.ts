@@ -28,6 +28,6 @@ export default defineConfig({
   preview: {
     host: true,
     allowedHosts: true,
-    port: 414,
+    port: 2414,
   },
 })
