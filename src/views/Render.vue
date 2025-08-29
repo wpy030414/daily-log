@@ -1,20 +1,11 @@
 <script setup lang="ts">
-import MacPanel from '@/components/MacPanel.vue'
+import VMacPanel from '@/components/VMacPanel.vue'
 import { useCustomTheme } from '@/stores/custom-theme'
-import { useEvent } from '@/stores/events'
-import { useProject } from '@/stores/projects'
-import { shotElement } from '@/utils'
+import { useLog } from '@/stores/log'
+import { copyAsText, shotElement } from '@/utils'
 import { ref } from 'vue'
 
 const showPanel = ref(true)
-const draggable = ref(false)
-
-async function switchDraggable() {
-  draggable.value = !draggable.value
-  showPanel.value = false
-  await new Promise((resolve) => setTimeout(resolve))
-  showPanel.value = true
-}
 </script>
 
 <template>
@@ -29,17 +20,15 @@ async function switchDraggable() {
   >
     <p class="border"></p>
 
-    <mac-panel
+    <v-mac-panel
       v-if="showPanel"
-      v-draggable="draggable"
       :actions="[
-        switchDraggable,
+        () => copyAsText(useLog().value),
         () => shotElement('#preview', 'copy'),
         () => shotElement('#preview', 'download'),
       ]"
-      :projects="useProject().value"
-      :events="useEvent().value"
-    ></mac-panel>
+      :log="useLog().value"
+    ></v-mac-panel>
 
     <p class="border"></p>
   </div>
@@ -50,7 +39,7 @@ async function switchDraggable() {
   background: white;
 
   &[enable-background='true'] {
-    background: url('panel-background.jpg') no-repeat center center;
+    background: url('@/assets/panel-background.jpg') no-repeat center center;
     background-size: cover;
   }
 

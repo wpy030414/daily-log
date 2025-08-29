@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { useCustomTheme } from '@/stores/custom-theme'
-import type { EventItem } from '@/types/eventItem'
-import type { ProjectItem } from '@/types/projectItem'
-import { markdownToHtml } from '@/utils'
+import type { Log } from '@/types'
 import { mdiChevronTripleRight } from '@mdi/js'
+import { marked } from 'marked'
 import { computed } from 'vue'
 
 defineProps<{
   actions: ((() => void) | undefined)[]
-  projects: ProjectItem[]
-  events: EventItem[]
+  log: Log
 }>()
 </script>
 
@@ -33,7 +31,7 @@ defineProps<{
 
     <v-list-item class="px-6 pb-6">
       <v-card class="section px-2 mb-4" variant="outlined" rounded="lg">
-        <template v-for="(i, index) of projects">
+        <template v-for="(i, index) of log.projects">
           <v-card class="my-1" variant="flat">
             <template v-slot:title>
               <v-badge
@@ -66,18 +64,18 @@ defineProps<{
             </template>
           </v-card>
 
-          <v-divider v-if="index + 1 < projects.length"></v-divider>
+          <v-divider v-if="index + 1 < log.projects.length"></v-divider>
         </template>
 
-        <v-empty-state v-if="projects.length === 0" text="暂时没有项目"></v-empty-state>
+        <v-empty-state v-if="log.projects.length === 0" text="暂时没有项目"></v-empty-state>
       </v-card>
 
       <v-card class="section px-2" variant="outlined" rounded="lg">
-        <template v-for="(i, index) of events">
+        <template v-for="(i, index) of log.events">
           <v-card class="my-2" variant="flat">
             <template v-slot:title>
               <div
-                v-html="computed(() => markdownToHtml(i.body)).value"
+                v-html="computed(() => marked(i.body)).value"
                 style="font-size: 14px; opacity: 0.8; white-space: normal"
               ></div>
             </template>
@@ -95,10 +93,10 @@ defineProps<{
             </template>
           </v-card>
 
-          <v-divider v-if="index + 1 < events.length"></v-divider>
+          <v-divider v-if="index + 1 < log.events.length"></v-divider>
         </template>
 
-        <v-empty-state v-if="events.length === 0" text="暂时没有事件"></v-empty-state>
+        <v-empty-state v-if="log.events.length === 0" text="暂时没有事件"></v-empty-state>
       </v-card>
     </v-list-item>
   </v-card>

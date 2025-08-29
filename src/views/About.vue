@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { logs } from '@/assets/logs'
 import { useMessage } from '@/stores/messages'
 import { mdiCat, mdiEmail, mdiGithub, mdiMagnify, mdiMenu } from '@mdi/js'
-import { marked } from 'marked'
 import { ref, watch } from 'vue'
-
-const showLog = ref(false)
 
 function visit(url: string) {
   const a = document.createElement('a')
@@ -77,44 +73,21 @@ function findMyCat() {
 </script>
 
 <template>
-  <v-navigation-drawer
-    v-model="showLog"
-    :location="$vuetify.display.mobile ? 'bottom' : undefined"
-    temporary
-    :width="500"
-  >
-    <v-timeline side="end">
-      <v-timeline-item
-        v-for="l of logs"
-        :dot-color="l.isBreakthrough ? 'primary' : 'secondary'"
-        size="small"
-      >
-        <template v-slot:opposite>
-          <p class="mr-4 text-grey">{{ l.date }}</p>
-        </template>
-
-        <div>
-          <strong>{{ l.v }}</strong>
-
-          <div class="text-caption" v-html="marked.parse(l.description)"></div>
-        </div>
-      </v-timeline-item>
-    </v-timeline>
-  </v-navigation-drawer>
-
   <div class="px-10 py-10">
     <v-card class="mb-4">
-      <v-img ref="picture" src="bar-background.png" height="300" cover>
+      <v-img
+        ref="picture"
+        src="https://user-assets.sxlcdn.com/images/64283/FtogK7haNdITcMXanQNgWRj9bdbV.png"
+        height="300"
+        cover
+      >
         <v-toolbar color="transparent">
           <template v-slot:prepend>
-            <v-btn :icon="mdiMenu" color="black" @click="showLog = !showLog"></v-btn>
+            <v-btn :icon="mdiMenu"></v-btn>
           </template>
 
           <template v-slot:append>
-            <v-btn
-              v-if="knockCounter.value < knockCounter.trigger"
-              color="black"
-              @click="knockCounter.value++"
+            <v-btn v-if="knockCounter.value < knockCounter.trigger" @click="knockCounter.value++"
               >召唤神兽</v-btn
             >
           </template>
@@ -124,10 +97,10 @@ function findMyCat() {
       <div class="px-4 py-4">
         <v-card-title>工作日报</v-card-title>
 
-        <v-card-subtitle>v{{ logs[0].v }} | {{ logs[0].date }}</v-card-subtitle>
+        <v-card-subtitle>v1.5.0</v-card-subtitle>
 
         <v-card-text>
-          <p>一个 <b>Penyo/杏仁鹿</b> 的作品。</p>
+          <p>一个 <b>Penyo</b> 的作品。</p>
 
           <p><i>“这个世界，果然还是没有形式主义更好呢~“</i></p>
         </v-card-text>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useEvent } from '@/stores/events'
+import { useLog } from '@/stores/log'
 import { useMessage } from '@/stores/messages'
-import { useProject } from '@/stores/projects'
 import { useCustomTheme } from '@/stores/custom-theme'
 import { downloadInBrowser, uploadInBrowser } from '@/utils'
 import {
@@ -12,18 +11,17 @@ import {
   mdiMenuUpOutline,
   mdiPlus,
 } from '@mdi/js'
-import { useTheme } from 'vuetify'
 
 function handleAdd(objType: 'p' | 'e') {
   if (objType === 'p') {
-    useProject().value.push({
+    useLog().value.projects.push({
       org: '罗德岛',
       project: '源石计划',
       progress: 0,
     })
     return
   } else if (objType === 'e') {
-    useEvent().value.push({
+    useLog().value.events.push({
       state: 'ok',
       body: '关闭全舰防御系统。',
     })
@@ -34,9 +32,9 @@ function handleAdd(objType: 'p' | 'e') {
 function handleMoveUp(objType: 'p' | 'e', index: number) {
   let objList
   if (objType === 'p') {
-    objList = useProject().value
+    objList = useLog().value.projects
   } else if (objType === 'e') {
-    objList = useEvent().value
+    objList = useLog().value.events
   } else {
     return
   }
@@ -50,9 +48,9 @@ function handleMoveUp(objType: 'p' | 'e', index: number) {
 function handleMoveDown(objType: 'p' | 'e', index: number) {
   let objList
   if (objType === 'p') {
-    objList = useProject().value
+    objList = useLog().value.projects
   } else if (objType === 'e') {
-    objList = useEvent().value
+    objList = useLog().value.events
   } else {
     return
   }
@@ -66,9 +64,9 @@ function handleMoveDown(objType: 'p' | 'e', index: number) {
 function handleDelete(objType: 'p' | 'e', index: number) {
   let objList
   if (objType === 'p') {
-    objList = useProject().value
+    objList = useLog().value.projects
   } else if (objType === 'e') {
-    objList = useEvent().value
+    objList = useLog().value.events
   } else {
     return
   }
@@ -77,13 +75,7 @@ function handleDelete(objType: 'p' | 'e', index: number) {
 
 function handleOutputOption() {
   downloadInBrowser(
-    'data:text/json;charset=utf-8,' +
-      encodeURIComponent(
-        JSON.stringify({
-          projects: useProject().value,
-          events: useEvent().value,
-        }),
-      ),
+    'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(useLog().value)),
     `工作日报快照-${Date.now()}.json`,
   )
 }
@@ -91,8 +83,8 @@ function handleOutputOption() {
 async function handleInputOption() {
   const result = (await uploadInBrowser()) as any
   if (result) {
-    useProject().value = result.projects
-    useEvent().value = result.events
+    useLog().value.projects = result.projects
+    useLog().value.events = result.events
     useMessage().success('导入成功！')
   } else {
     useMessage().info('您取消了操作。')
@@ -176,7 +168,7 @@ function handleUpdateImage(file: File | File[]) {
         </thead>
 
         <tbody>
-          <tr v-for="(p, i) of useProject().value">
+          <tr v-for="(p, i) of useLog().value.projects">
             <td class="py-5">
               <v-select
                 v-model="p.exception"
@@ -268,7 +260,7 @@ function handleUpdateImage(file: File | File[]) {
         </thead>
 
         <tbody>
-          <tr v-for="(e, i) of useEvent().value">
+          <tr v-for="(e, i) of useLog().value.events">
             <td class="py-5">
               <v-select
                 v-model="e.state"

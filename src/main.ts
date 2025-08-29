@@ -13,11 +13,8 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 
 import App from './App.vue'
 import router from './router'
-import { draggable } from './utils'
 
 const app = createApp(App)
-
-app.directive('draggable', draggable)
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)

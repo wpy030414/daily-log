@@ -1,7 +1,5 @@
 import { useMessage } from '@/stores/messages'
-import markdownit from 'markdown-it'
-import markdownItTextualUml from 'markdown-it-textual-uml'
-import markdownItKatex from '@iktakahiro/markdown-it-katex'
+import type { Log } from '@/types'
 import { toBlob } from 'html-to-image'
 
 export function downloadInBrowser(href: string, filename: string) {
@@ -92,83 +90,64 @@ export async function shotElement(cssPath: string, method: 'download' | 'copy' =
   }
 }
 
-export function markdownToHtml(str: string) {
-  return markdownit().use(markdownItTextualUml).use(markdownItKatex).render(str)
-}
+export function copyAsText(log: Log) {
+  // 创建进度条文本
+  const createProgressBar = (progress: number): string => {
+    const value = Math.max(0, Math.min(100, progress))
+    const barLength = 20
+    const filledLength = Math.round((value / 100) * barLength)
+    const filled = '█'.repeat(filledLength)
+    const empty = '░'.repeat(barLength - filledLength)
+    return `${filled}${empty} ${value}%`
+  }
 
-export const draggable = {
-  mounted(
-    el: {
-      querySelector: (arg0: any) => any
-      offsetLeft: any
-      offsetTop: any
-      style: { cursor: string; userSelect: string; left: string; top: string; position: string }
-      __draggable?: { destroy: () => void }
-    },
-    binding: { value: boolean; arg: any },
-  ) {
-    if (binding.value !== false) {
-      let startX: number, startY: number, initialX: number, initialY: number
-      let isDragging = false
+  // 构建项目日志部分
+  const projectSection = ['📋 项目日志:']
+  if (log.projects.length === 0) {
+    projectSection.push('  无项目记录')
+  } else {
+    log.projects.forEach((project) => {
+      // 异常状态标识
+      const exception = project.exception
+        ? project.exception === 'failed'
+          ? '❌ 失败'
+          : '⏸️ 搁置'
+        : ''
 
-      const dragHandle = binding.arg ? el.querySelector(binding.arg) : el
+      // 今日进展标识
+      const progressFlag = project.makeProgress ? '⬆️' : ''
 
-      const handleMouseDown = (e: { target: { tagName: string }; clientX: any; clientY: any }) => {
-        if (e.target.tagName === 'BUTTON') return
+      // 项目标题行
+      projectSection.push(`  📁 ${project.project} ${exception} ${progressFlag}`)
+      projectSection.push(`    组织: ${project.org}`)
+      projectSection.push(`    进度: ${createProgressBar(project.progress)}`)
+      projectSection.push('') // 空行分隔
+    })
+  }
 
-        isDragging = true
-
-        initialX = el.offsetLeft
-        initialY = el.offsetTop
-        startX = e.clientX
-        startY = e.clientY
-
-        document.addEventListener('mousemove', handleMouseMove)
-        document.addEventListener('mouseup', handleMouseUp)
-
-        el.style.cursor = 'grabbing'
-        el.style.userSelect = 'none'
+  // 构建事件日志部分
+  const eventSection = ['📝 事件日志:']
+  if (log.events.length === 0) {
+    eventSection.push('  无事件记录')
+  } else {
+    log.events.forEach((event) => {
+      // 事件状态标识
+      let stateIcon = ''
+      switch (event.state) {
+        case 'on':
+          stateIcon = '🚀 推进中'
+          break
+        case 'blocked':
+          stateIcon = '🚧 受阻'
+          break
+        case 'ok':
+          stateIcon = '✅ 已完成'
+          break
       }
+      eventSection.push(`  ${stateIcon}: ${event.body}`)
+    })
+  }
 
-      const handleMouseMove = (e: { clientX: number; clientY: number }) => {
-        if (!isDragging) return
-
-        const dx = e.clientX - startX
-        const dy = e.clientY - startY
-
-        el.style.left = `${initialX + dx}px`
-        el.style.top = `${initialY + dy}px`
-      }
-
-      const handleMouseUp = () => {
-        isDragging = false
-
-        document.removeEventListener('mousemove', handleMouseMove)
-        document.removeEventListener('mouseup', handleMouseUp)
-
-        el.style.cursor = 'grab'
-        el.style.userSelect = ''
-      }
-
-      dragHandle.addEventListener('mousedown', handleMouseDown)
-
-      el.__draggable = {
-        destroy: () => {
-          dragHandle.removeEventListener('mousedown', handleMouseDown)
-          document.removeEventListener('mousemove', handleMouseMove)
-          document.removeEventListener('mouseup', handleMouseUp)
-        },
-      }
-
-      el.style.position = 'absolute'
-      el.style.cursor = 'grab'
-    }
-  },
-
-  unmounted(el: { __draggable?: { destroy: () => void } }) {
-    if (el.__draggable) {
-      el.__draggable.destroy()
-      delete el.__draggable
-    }
-  },
+  // 组合所有部分并返回
+  copyToClipboard([...projectSection, '', ...eventSection].join('\n'))
 }

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
-import { type ThemeInstance } from 'vuetify'
+import { useTheme, type ThemeInstance } from 'vuetify'
 
 export const useCustomTheme = defineStore(
   'custom-themes',
