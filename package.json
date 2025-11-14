@@ -1,6 +1,6 @@
 {
   "name": "daily-log",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "private": true,
   "type": "module",
   "engines": {
@@ -18,23 +18,23 @@
     "@mdi/js": "^7.4.47",
     "@vitejs/plugin-basic-ssl": "^2.1.0",
     "html-to-image": "^1.11.13",
-    "marked": "^16.2.1",
-    "pinia": "^3.0.3",
-    "pinia-plugin-persistedstate": "^4.5.0",
-    "vue": "^3.5.18",
-    "vue-router": "^4.5.1",
-    "vuetify": "^3.9.6"
+    "marked": "^17.0.0",
+    "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
+    "vue": "^3.5.24",
+    "vue-router": "^4.6.3",
+    "vuetify": "^3.10.11"
   },
   "devDependencies": {
-    "@tsconfig/node22": "^22.0.2",
+    "@tsconfig/node22": "^22.0.3",
     "@types/node": "^22.16.5",
     "@vitejs/plugin-vue": "^6.0.1",
-    "@vue/tsconfig": "^0.7.0",
+    "@vue/tsconfig": "^0.8.1",
     "npm-run-all2": "^8.0.4",
     "prettier": "3.6.2",
-    "typescript": "~5.8.0",
+    "typescript": "~5.9.3",
     "vite": "npm:rolldown-vite@latest",
-    "vite-plugin-vue-devtools": "^8.0.0",
-    "vue-tsc": "^3.0.4"
+    "vite-plugin-vue-devtools": "^8.0.3",
+    "vue-tsc": "^3.1.3"
   }
 }

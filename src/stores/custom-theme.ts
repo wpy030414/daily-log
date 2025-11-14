@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
-import { useTheme, type ThemeInstance } from 'vuetify'
+import { type ThemeInstance } from 'vuetify'
 
 export const useCustomTheme = defineStore(
   'custom-themes',
@@ -16,7 +16,7 @@ export const useCustomTheme = defineStore(
       [() => provider.value, () => isDark.value],
       () => {
         if (provider.value) {
-          provider.value.global.name = isDark.value ? 'dark' : 'light'
+          provider.value.change(isDark.value ? 'dark' : 'light')
         }
       },
       {

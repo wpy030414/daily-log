@@ -97,7 +97,7 @@ function findMyCat() {
       <div class="px-4 py-4">
         <v-card-title>工作日报</v-card-title>
 
-        <v-card-subtitle>v1.5.0</v-card-subtitle>
+        <v-card-subtitle>v1.5.1</v-card-subtitle>
 
         <v-card-text>
           <p>一个 <b>Penyo</b> 的作品。</p>
